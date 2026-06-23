@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LOT 8 — Workstation · Confidential</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -469,6 +470,11 @@
 </footer>
 
 <script>
+const SB = supabase.createClient(
+  'https://keywwvhzlgryfbqhbpim.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtleXd3dmh6bGdyeWZicWhicGltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNjAxMzgsImV4cCI6MjA5NzczNjEzOH0.w7o5G8q3dEOiwVQI4Wef_8nDQJwhEgkVL2njeu7f2tM'
+);
+
 const O = '#FF5C00', A = '#FFB800', G = '#6BCB77', P = '#A78BFA', R = '#F87171', C = '#67E8F9';
 
 const sections = ["Notes","Action Plan","Taskboard","Vision","Platform","Value Props","AI Core","Business Model","Financials","Go-to-Market","Roadmap","Competitive","Raise"];
@@ -950,27 +956,27 @@ const OWNERS = ['All','Arjun','Josh','Jamie','Antonio'];
 let TASKS = [];
 let boardFilter = 'All';
 
-function loadTasks() {
-  let stored = null, applied = [];
-  try { const r = localStorage.getItem('revelry-tasks-v2'); if (r) stored = JSON.parse(r); } catch (e) {}
-  try { const a = localStorage.getItem('revelry-seed-applied'); if (a) applied = JSON.parse(a); } catch (e) {}
-
-  if (!stored) {
-    TASKS = SEED_TASKS.slice();
-    applied = SEED_TASKS.map(t => t.id);
+async function loadTasks() {
+  const { data, error } = await SB.from('tasks').select('*').order('position', { ascending: true });
+  if (error || !data || data.length === 0) {
+    // First run — seed the database from SEED_TASKS
+    TASKS = SEED_TASKS.map((t, i) => ({ ...t, position: i }));
+    await SB.from('tasks').upsert(TASKS);
   } else {
-    TASKS = stored;
-    const have = new Set(stored.map(t => t.id));
-    const app = new Set(applied);
-    SEED_TASKS.forEach(s => { if (!have.has(s.id) && !app.has(s.id)) { TASKS.push(s); app.add(s.id); } });
-    applied = [...app];
+    TASKS = data;
+    // Append any new seed tasks not yet in the database
+    const have = new Set(data.map(t => t.id));
+    const maxPos = data.reduce((m, t) => Math.max(m, t.position || 0), data.length);
+    const newSeeds = SEED_TASKS
+      .filter(s => !have.has(s.id))
+      .map((s, i) => ({ ...s, position: maxPos + i + 1 }));
+    if (newSeeds.length) {
+      TASKS = [...TASKS, ...newSeeds];
+      await SB.from('tasks').upsert(newSeeds);
+    }
   }
-  try { localStorage.setItem('revelry-seed-applied', JSON.stringify(applied)); } catch (e) {}
-  saveTasks();
 }
-function saveTasks() {
-  try { localStorage.setItem('revelry-tasks-v2', JSON.stringify(TASKS)); } catch (e) {}
-}
+function saveTasks() { /* writes handled per-operation */ }
 
 const taskboard = () => `
   ${tag('Live Workstation', G)}
@@ -1040,22 +1046,23 @@ function renderProgress() {
     <div style="height:8px;background:var(--border);border-radius:99px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${A},${G});transition:width .3s;border-radius:99px"></div></div>`;
 }
 
-function tbMove(id, col) { const t=TASKS.find(x=>x.id===id); if(t){t.col=col; saveTasks(); renderBoard();} }
-function tbDelete(id) { TASKS=TASKS.filter(x=>x.id!==id); saveTasks(); renderBoard(); }
+async function tbMove(id, col) { const t=TASKS.find(x=>x.id===id); if(!t) return; t.col=col; renderBoard(); await SB.from('tasks').update({col}).eq('id',id); }
+async function tbDelete(id) { TASKS=TASKS.filter(x=>x.id!==id); renderBoard(); await SB.from('tasks').delete().eq('id',id); }
 let _drag=null;
 function tbDrag(e,id){ _drag=id; e.dataTransfer.effectAllowed='move'; }
 function tbDrop(e,col){ e.preventDefault(); const c=document.querySelector('.tb-col-over'); if(c)c.classList.remove('tb-col-over'); if(_drag){tbMove(_drag,col); _drag=null;} }
 
 function bindBoard() {
   const addBtn=document.getElementById('tb-add');
-  if(addBtn) addBtn.onclick=()=>{
+  if(addBtn) addBtn.onclick=async()=>{
     const text=prompt('New task:'); if(!text) return;
     const owner=prompt('Owner (All / Arjun / Josh / Jamie / Antonio):','All')||'All';
-    TASKS.unshift({id:'t'+Date.now(), text, col:'todo', owner, track:'', c:O});
-    saveTasks(); renderBoard();
+    const maxPos=TASKS.reduce((m,t)=>Math.max(m,t.position||0),0);
+    const t={id:'t'+Date.now(),text,col:'todo',owner,track:'',c:O,position:maxPos+1};
+    TASKS.unshift(t); renderBoard(); await SB.from('tasks').insert(t);
   };
   const resetBtn=document.getElementById('tb-reset');
-  if(resetBtn) resetBtn.onclick=()=>{ if(confirm('Reset board to the original pilot tasks? This clears any custom tasks.')){ TASKS=SEED_TASKS.slice(); saveTasks(); renderBoard(); } };
+  if(resetBtn) resetBtn.onclick=async()=>{ if(confirm('Reset board to the original pilot tasks? This clears any custom tasks.')){ TASKS=SEED_TASKS.map((t,i)=>({...t,position:i})); await SB.from('tasks').delete().neq('id',''); await SB.from('tasks').upsert(TASKS); renderBoard(); } };
   document.querySelectorAll('.tb-filter').forEach(b=>{
     b.onclick=()=>{ boardFilter=b.dataset.owner; document.querySelectorAll('.tb-filter').forEach(x=>{x.style.background='transparent';x.style.color='var(--muted)';x.style.borderColor='var(--border)';}); b.style.background=`color-mix(in srgb,${G} 13%,transparent)`; b.style.color=G; b.style.borderColor=`color-mix(in srgb,${G} 30%,transparent)`; renderBoard(); };
   });
@@ -1507,9 +1514,17 @@ function renderSection(name) {
   if (name === 'Taskboard') bindBoard();
 }
 
-// Load task state, then render the default view
-loadTasks();
-renderSection('Notes');
+// Boot: load from Supabase, render, then subscribe to real-time changes
+(async () => {
+  await loadTasks();
+  renderSection('Notes');
+  SB.channel('tasks-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, async () => {
+      const { data } = await SB.from('tasks').select('*').order('position', { ascending: true });
+      if (data) { TASKS = data; if (document.getElementById('tb-board')) renderBoard(); }
+    })
+    .subscribe();
+})();
 </script>
 
 </body>

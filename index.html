@@ -435,6 +435,7 @@
   .tb-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: grab; transition: transform .1s, border-color .15s; }
   .tb-card:hover { border-color: #333; transform: translateY(-1px); }
   .tb-card:active { cursor: grabbing; }
+  .tb-card textarea { font-family: 'DM Sans', sans-serif; }
   .tb-empty { color: #444; font-size: 11px; text-align: center; padding: 24px 0; border: 1px dashed var(--border); border-radius: 8px; }
   .tb-move { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 22px; height: 22px; border-radius: 5px; cursor: pointer; font-size: 11px; line-height: 1; padding: 0; font-family: 'DM Sans', sans-serif; transition: all .12s; }
   .tb-move:hover { border-color: #444; color: var(--light); }
@@ -973,6 +974,8 @@ const OWNERS = ['All','Arjun','Josh','Jamie','Antonio'];
 
 let TASKS = [];
 let boardFilter = 'All';
+let _editingId  = null;
+let _tbColor    = O;
 
 async function loadTasks() {
   const { data, error } = await SB.from('tasks').select('*').order('position', { ascending: true });
@@ -996,20 +999,43 @@ async function loadTasks() {
 }
 function saveTasks() { /* writes handled per-operation */ }
 
+const TB_COLORS = [['#FF5C00','Product / Build'],['#FFB800','Brand / Design'],['#6BCB77','Ops / Admin'],['#A78BFA','Tech / Infra'],['#F87171','Urgent']];
+
 const taskboard = () => `
   ${tag('Live Workstation', G)}
   ${h2('TASKBOARD')}
-  ${body('Drag cards between columns, or use the arrows. Add your own tasks. State is shared across the team and persists between sessions. Filter by owner to see just your lane.')}
+  ${body('Drag cards or use ← → arrows to move tasks. Click any task text to edit it inline. Click the owner badge to reassign. State syncs live across the whole team.')}
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:24px 0 8px">
     <span style="color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-right:4px">Filter</span>
     ${OWNERS.map(o=>`<button class="tb-filter" data-owner="${o}" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted)">${o}</button>`).join('')}
     <div style="flex:1"></div>
-    <button id="tb-add" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:color-mix(in srgb,${O} 13%,transparent);border:1px solid color-mix(in srgb,${O} 30%,transparent);color:${O}">+ Add task</button>
+    <button onclick="tbShowAdd()" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:color-mix(in srgb,${O} 13%,transparent);border:1px solid color-mix(in srgb,${O} 30%,transparent);color:${O}">+ Add task</button>
     <button id="tb-reset" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted)">Reset</button>
   </div>
 
-  <div id="tb-progress-wrap" style="margin:12px 0 24px"></div>
+  <div id="tb-add-form" style="display:none;background:#111;border:1px solid #2A2A2A;border-radius:10px;padding:16px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">New Task</div>
+    <textarea id="tb-new-text" placeholder="What needs to be done?" rows="2" style="width:100%;background:#161616;border:1px solid #333;border-radius:6px;color:var(--light);font-family:'DM Sans',sans-serif;font-size:13px;padding:10px;box-sizing:border-box;resize:none;outline:none;margin-bottom:10px" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();tbAddTask()}if(event.key==='Escape')tbHideAdd()"></textarea>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <select id="tb-new-owner" style="padding:8px 10px;border-radius:6px;background:#1A1A1A;border:1px solid #333;color:var(--light);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;outline:none">
+        ${OWNERS.map(o=>`<option>${o}</option>`).join('')}
+      </select>
+      <div style="display:flex;gap:5px;align-items:center" title="Card colour">
+        ${TB_COLORS.map(([c,l],i)=>`<button onclick="tbPickColor('${c}')" id="tbcp${i}" title="${l}" style="width:20px;height:20px;border-radius:4px;background:${c};border:2px solid ${i===0?'white':'transparent'};cursor:pointer;transition:border-color .1s;padding:0"></button>`).join('')}
+      </div>
+      <div style="flex:1"></div>
+      <button onclick="tbAddTask()" style="padding:8px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,${O},${A});border:none;color:#0A0A0A">Add</button>
+      <button onclick="tbHideAdd()" style="padding:8px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted)">Cancel</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:8px 0 14px;border-bottom:1px solid var(--border);margin-bottom:16px">
+    <span style="color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Color key</span>
+    ${TB_COLORS.map(([c,l])=>`<span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:3px;background:${c};flex-shrink:0"></span><span style="font-size:11px;color:var(--muted)">${l}</span></span>`).join('')}
+  </div>
+
+  <div id="tb-progress-wrap" style="margin:0 0 24px"></div>
   <div class="tb-board" id="tb-board"></div>
 `;
 
@@ -1038,11 +1064,21 @@ function tbCard(t) {
   const colIdx = COLS.findIndex(c=>c.key===t.col);
   const prevK = colIdx>0 ? COLS[colIdx-1].key : null;
   const nextK = colIdx<COLS.length-1 ? COLS[colIdx+1].key : null;
+  const editing = _editingId === t.id;
+  const safeText = t.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const textBlock = editing
+    ? `<textarea id="tb-edit-${t.id}" rows="3" style="width:100%;background:#1A1A1A;border:1px solid ${O};border-radius:4px;color:var(--light);font-size:13px;line-height:1.5;padding:8px;box-sizing:border-box;resize:none;outline:none;margin-bottom:8px"
+         onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();tbSaveEdit('${t.id}')}if(event.key==='Escape')tbCancelEdit()">${safeText}</textarea>
+       <div style="display:flex;gap:6px;margin-bottom:10px">
+         <button onclick="tbSaveEdit('${t.id}')" style="padding:4px 12px;border-radius:4px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:${G};border:none;color:#0A0A0A">Save</button>
+         <button onclick="tbCancelEdit()" style="padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted)">Cancel</button>
+       </div>`
+    : `<div onclick="tbStartEdit('${t.id}')" title="Click to edit" style="color:var(--light);font-size:13px;line-height:1.5;margin-bottom:10px;cursor:text">${safeText}</div>`;
   return `
-    <div class="tb-card" draggable="true" ondragstart="tbDrag(event,'${t.id}')" style="border-left:3px solid ${t.c||'#888'}">
-      <div style="color:var(--light);font-size:13px;line-height:1.5;margin-bottom:10px">${t.text}</div>
+    <div class="tb-card" draggable="${editing?'false':'true'}" ondragstart="${editing?'':'tbDrag(event,\''+t.id+'\')' }" style="border-left:3px solid ${t.c||'#888'}">
+      ${textBlock}
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <span style="font-size:10px;color:var(--muted);background:color-mix(in srgb,${t.c||'#888'} 12%,transparent);border:1px solid color-mix(in srgb,${t.c||'#888'} 25%,transparent);padding:2px 8px;border-radius:4px;font-weight:600">${t.owner}${t.track&&t.track!=='00'?` · T${t.track}`:''}</span>
+        <span onclick="tbCycleOwner('${t.id}')" title="Click to change owner" style="font-size:10px;color:var(--muted);background:color-mix(in srgb,${t.c||'#888'} 12%,transparent);border:1px solid color-mix(in srgb,${t.c||'#888'} 25%,transparent);padding:2px 8px;border-radius:4px;font-weight:600;cursor:pointer">${t.owner}${t.track&&t.track!=='00'?` · T${t.track}`:''}</span>
         <span style="display:flex;gap:4px">
           ${prevK?`<button onclick="tbMove('${t.id}','${prevK}')" class="tb-move">←</button>`:''}
           ${nextK?`<button onclick="tbMove('${t.id}','${nextK}')" class="tb-move">→</button>`:''}
@@ -1070,15 +1106,43 @@ let _drag=null;
 function tbDrag(e,id){ _drag=id; e.dataTransfer.effectAllowed='move'; }
 function tbDrop(e,col){ e.preventDefault(); const c=document.querySelector('.tb-col-over'); if(c)c.classList.remove('tb-col-over'); if(_drag){tbMove(_drag,col); _drag=null;} }
 
+function tbStartEdit(id) {
+  _editingId = id; renderBoard();
+  requestAnimationFrame(() => { const ta=document.getElementById('tb-edit-'+id); if(ta){ta.focus();ta.selectionStart=ta.value.length;} });
+}
+async function tbSaveEdit(id) {
+  const ta = document.getElementById('tb-edit-'+id);
+  const text = ta ? ta.value.trim() : '';
+  if (text) { const t=TASKS.find(x=>x.id===id); if(t){ t.text=text; await SB.from('tasks').update({text}).eq('id',id); } }
+  _editingId = null; renderBoard();
+}
+function tbCancelEdit() { _editingId=null; renderBoard(); }
+async function tbCycleOwner(id) {
+  const t=TASKS.find(x=>x.id===id); if(!t) return;
+  t.owner = OWNERS[(OWNERS.indexOf(t.owner)+1)%OWNERS.length];
+  renderBoard(); await SB.from('tasks').update({owner:t.owner}).eq('id',id);
+}
+function tbShowAdd() {
+  const f=document.getElementById('tb-add-form'); if(f) f.style.display='block';
+  const tx=document.getElementById('tb-new-text'); if(tx) tx.focus();
+}
+function tbHideAdd() { const f=document.getElementById('tb-add-form'); if(f) f.style.display='none'; }
+function tbPickColor(c) {
+  _tbColor=c;
+  TB_COLORS.forEach(([col],i)=>{ const b=document.getElementById('tbcp'+i); if(b) b.style.borderColor=col===c?'white':'transparent'; });
+}
+async function tbAddTask() {
+  const textEl=document.getElementById('tb-new-text');
+  const ownerEl=document.getElementById('tb-new-owner');
+  const text=textEl?textEl.value.trim():''; if(!text) return;
+  const owner=ownerEl?ownerEl.value:'All';
+  const maxPos=TASKS.reduce((m,t)=>Math.max(m,t.position||0),0);
+  const t={id:'t'+Date.now(),text,col:'todo',owner,track:'',c:_tbColor,position:maxPos+1};
+  TASKS.unshift(t); tbHideAdd(); if(textEl) textEl.value='';
+  renderBoard(); await SB.from('tasks').insert(t);
+}
+
 function bindBoard() {
-  const addBtn=document.getElementById('tb-add');
-  if(addBtn) addBtn.onclick=async()=>{
-    const text=prompt('New task:'); if(!text) return;
-    const owner=prompt('Owner (All / Arjun / Josh / Jamie / Antonio):','All')||'All';
-    const maxPos=TASKS.reduce((m,t)=>Math.max(m,t.position||0),0);
-    const t={id:'t'+Date.now(),text,col:'todo',owner,track:'',c:O,position:maxPos+1};
-    TASKS.unshift(t); renderBoard(); await SB.from('tasks').insert(t);
-  };
   const resetBtn=document.getElementById('tb-reset');
   if(resetBtn) resetBtn.onclick=async()=>{ if(confirm('Reset board to the original pilot tasks? This clears any custom tasks.')){ TASKS=SEED_TASKS.map((t,i)=>({...t,position:i})); await SB.from('tasks').delete().neq('id',''); await SB.from('tasks').upsert(TASKS); renderBoard(); } };
   document.querySelectorAll('.tb-filter').forEach(b=>{

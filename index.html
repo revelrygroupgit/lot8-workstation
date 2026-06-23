@@ -74,18 +74,28 @@
   /* ── HEADER ── */
   header {
     border-bottom: 1px solid var(--border);
-    padding: 20px 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 0;
     position: sticky;
     top: 0;
     background: #0A0A0AF0;
     backdrop-filter: blur(12px);
     z-index: 100;
+  }
+  .header-row {
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
     gap: 12px;
   }
+  #subnav {
+    display: none;
+    padding: 0 32px 10px;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  #subnav.visible { display: flex; }
   .logo-wrap { display: flex; align-items: center; gap: 12px; }
   .logo-icon {
     width: 36px; height: 36px; border-radius: 8px;
@@ -444,14 +454,17 @@
 <body>
 
 <header>
-  <div class="logo-wrap">
-    <div class="logo-icon">8</div>
-    <div>
-      <div class="logo-name">LOT 8</div>
-      <div class="logo-sub">WORKSTATION · CONFIDENTIAL</div>
+  <div class="header-row">
+    <div class="logo-wrap">
+      <div class="logo-icon">8</div>
+      <div>
+        <div class="logo-name">LOT 8</div>
+        <div class="logo-sub">WORKSTATION · CONFIDENTIAL</div>
+      </div>
     </div>
+    <nav id="nav"></nav>
   </div>
-  <nav id="nav"></nav>
+  <div id="subnav"></div>
 </header>
 
 <main id="main"></main>
@@ -477,8 +490,13 @@ const SB = supabase.createClient(
 
 const O = '#FF5C00', A = '#FFB800', G = '#6BCB77', P = '#A78BFA', R = '#F87171', C = '#67E8F9';
 
-const sections = ["Notes","Action Plan","Taskboard","Vision","Platform","Value Props","AI Core","Business Model","Financials","Go-to-Market","Roadmap","Competitive","Raise"];
-const workstationSections = ["Notes","Action Plan","Taskboard"];
+const GROUPS = [
+  { label:'Action Center',  key:'action',   tabs:['Notes','Action Plan','Taskboard'],                                                                         c:G },
+  { label:'Lot 8 Strategy', key:'strategy', tabs:['Vision','Platform','Value Props','AI Core','Business Model','Financials','Go-to-Market','Roadmap','Competitive','Raise'], c:O },
+  { label:'Landing Page',   key:'landing',  tabs:['Landing Page'],                                                                                            c:A },
+];
+let activeGroup = 'action';
+let activeTab   = 'Notes';
 
 /* ── helpers ── */
 const tag = (text, color=O) => `<span class="tag" style="--c:${color}">${text}</span>`;
@@ -1466,6 +1484,121 @@ const raise = () => `
   </div>
 `;
 
+/* ── LANDING PAGE ── */
+const landingPage = () => {
+  const banner = `<div style="display:flex;align-items:center;gap:10px;background:color-mix(in srgb,${A} 10%,transparent);border:1px solid color-mix(in srgb,${A} 24%,transparent);border-radius:8px;padding:10px 16px;margin-bottom:40px"><span class="tag amber">DRAFT MOCK</span><span style="color:#888;font-size:13px">Landing page in progress — share final brand language to sharpen the copy.</span></div>`;
+
+  const hero = `
+    <div style="text-align:center;padding:72px 0 56px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.2em;color:${O};text-transform:uppercase;margin-bottom:20px">Australia's Live Commerce Platform · Early Access</div>
+      <div style="font-size:clamp(60px,10vw,100px);font-weight:800;font-family:'Bebas Neue',sans-serif;letter-spacing:.02em;line-height:.9;margin-bottom:24px">
+        <span style="display:block;color:var(--light)">WATCH.</span>
+        <span style="display:block;color:var(--light)">CHAT.</span>
+        <span style="display:block;background:linear-gradient(135deg,${O},${A});-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">BUY.</span>
+      </div>
+      <div style="color:#777;font-size:17px;max-width:460px;margin:0 auto 40px;line-height:1.65">Entertainment is the future storefront.<br>Shop live with creators you trust — one tap, zero friction.</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+        <button onclick="document.getElementById('lp-waitlist').scrollIntoView({behavior:'smooth'})" style="padding:16px 32px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,${O},${A});border:none;color:#0A0A0A">Join as a Creator →</button>
+        <button onclick="document.getElementById('lp-waitlist').scrollIntoView({behavior:'smooth'})" style="padding:16px 32px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:var(--light)">Partner as a Brand →</button>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:10px;background:color-mix(in srgb,${A} 8%,transparent);border:1px solid color-mix(in srgb,${A} 18%,transparent);border-radius:100px;padding:8px 20px">
+        <span style="font-size:18px">👀</span>
+        <span style="color:#888;font-size:12px">Meet <strong style="color:${A}">Otto</strong> — your AI stream companion, powered by Claude</span>
+      </div>
+    </div>`;
+
+  const statsBar = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:12px;overflow:hidden;margin-bottom:64px">
+      ${[['$500B+','Global live commerce market by \'27'],['30×','Higher conversion vs static eComm'],['100%','Creator earnings during the trial'],['AU Only','First. Then the world.']].map(([v,l])=>`
+        <div style="background:var(--card);padding:28px;text-align:center">
+          <div style="font-size:32px;font-weight:800;font-family:'Bebas Neue',sans-serif;background:linear-gradient(135deg,${O},${A});-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">${v}</div>
+          <div style="color:#666;font-size:12px;margin-top:6px;line-height:1.4">${l}</div>
+        </div>`).join('')}
+    </div>`;
+
+  const howItWorks = `
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="color:${O};font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">How it works</div>
+      <div style="font-size:36px;font-weight:800;font-family:'Bebas Neue',sans-serif;color:var(--light);margin-top:6px">ONE STREAM. THREE WINS.</div>
+    </div>
+    <div class="grid-3" style="margin-bottom:64px">
+      ${[
+        {n:'01',icon:'🎙️',c:O,title:'Creator Goes Live',desc:'Stream on YouTube. Pin products as you go. Otto watches the room — and tells you when engagement spikes so you can drop the deal at the right moment.'},
+        {n:'02',icon:'👀',c:G,title:'Audience Shops Live',desc:'Embedded stream + product panel side by side. Saved payment details. One tap to buy without leaving the stream, the creator, or the moment.'},
+        {n:'03',icon:'💸',c:A,title:'Everyone Gets Paid',desc:'Creator earns 10% commission instantly. Brand sells at full retail price. Lot 8 takes 2–3%. Zero wasted ad spend. Pay on performance, not impressions.'},
+      ].map(s=>`
+        <div class="card" style="border-top:3px solid ${s.c}">
+          <div style="font-size:10px;font-weight:700;color:${s.c};letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px">Step ${s.n}</div>
+          <div style="font-size:28px;margin-bottom:10px">${s.icon}</div>
+          <div style="color:var(--light);font-weight:700;font-size:15px;margin-bottom:8px">${s.title}</div>
+          <div class="body" style="font-size:13px">${s.desc}</div>
+        </div>`).join('')}
+    </div>`;
+
+  const audiences = `
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="color:${O};font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Built for every side of the stream</div>
+      <div style="font-size:36px;font-weight:800;font-family:'Bebas Neue',sans-serif;color:var(--light);margin-top:6px">YOUR LOT.</div>
+    </div>
+    <div class="grid-3" style="margin-bottom:64px">
+      ${[
+        {emoji:'🎙️',title:'Creators',c:O,sub:'Stream & Earn',props:['Earn 10% on every sale — not AdSense pennies','Otto coaches you live: when to pin, what to drop, when to push scarcity','Your buyers, your list — you own the relationship','Founding 50 creators get 100% trial earnings and priority matching']},
+        {emoji:'👥',title:'Buyers',c:G,sub:'Watch & Buy',props:['Shop inside the stream — no redirects, no tab-switching, no friction','Real people, real opinions — not polished campaign content','Exclusive live drops you won\'t find anywhere else','Early access for waitlist members']},
+        {emoji:'🏷️',title:'Brands',c:A,sub:'Reach & Convert',props:['Pay on performance — commission only, zero wasted spend','AI-matched to creators whose audiences actually buy your category','Live GMV dashboard: watch sales happen in real time','Contact us for founding brand partner spots']},
+      ].map(s=>`
+        <div class="card" style="border-top:3px solid ${s.c}">
+          <div style="font-size:28px;margin-bottom:8px">${s.emoji}</div>
+          <div style="font-size:10px;font-weight:700;color:${s.c};letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">${s.sub}</div>
+          <div style="color:var(--light);font-weight:800;font-size:22px;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;margin-bottom:16px">${s.title}</div>
+          ${s.props.map(p=>`<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:${s.c};flex-shrink:0;font-size:12px">→</span><span style="color:#999;font-size:13px;line-height:1.5">${p}</span></div>`).join('')}
+        </div>`).join('')}
+    </div>`;
+
+  const waitlist = `
+    <div id="lp-waitlist" style="background:linear-gradient(135deg,color-mix(in srgb,${O} 7%,transparent),color-mix(in srgb,${A} 4%,transparent));border:1px solid color-mix(in srgb,${O} 18%,transparent);border-radius:16px;padding:56px 40px;text-align:center;margin-bottom:48px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.2em;color:${O};text-transform:uppercase;margin-bottom:10px">Australia Only · Limited Spots · Free to Join</div>
+      <div style="font-size:44px;font-weight:800;font-family:'Bebas Neue',sans-serif;color:var(--light);margin-bottom:8px">GET EARLY ACCESS</div>
+      <div style="color:#777;font-size:14px;margin-bottom:36px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6">We're running a private 5-creator, 5-brand pilot. Apply now and we'll reach out personally.</div>
+      <div style="max-width:440px;margin:0 auto">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button id="lp-btn-creator" onclick="lpSetType('creator')" style="flex:1;padding:11px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:color-mix(in srgb,${G} 14%,transparent);border:1px solid color-mix(in srgb,${G} 32%,transparent);color:${G}">🎙️ I'm a Creator</button>
+          <button id="lp-btn-brand" onclick="lpSetType('brand')" style="flex:1;padding:11px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#666">🏷️ I'm a Brand</button>
+        </div>
+        <input id="lp-name" type="text" placeholder="Your name" style="width:100%;padding:14px;border-radius:8px;background:#161616;border:1px solid #2A2A2A;color:var(--light);font-family:'DM Sans',sans-serif;font-size:14px;margin-bottom:10px;box-sizing:border-box;outline:none" />
+        <input id="lp-email" type="email" placeholder="Email address" style="width:100%;padding:14px;border-radius:8px;background:#161616;border:1px solid #2A2A2A;color:var(--light);font-family:'DM Sans',sans-serif;font-size:14px;margin-bottom:16px;box-sizing:border-box;outline:none" />
+        <button onclick="lpSubmit()" style="width:100%;padding:16px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,${O},${A});border:none;color:#0A0A0A;letter-spacing:.03em">Join the Waitlist →</button>
+        <div id="lp-msg" style="margin-top:14px;font-size:13px;display:none"></div>
+      </div>
+    </div>`;
+
+  return banner + hero + statsBar + howItWorks + audiences + waitlist;
+};
+
+let _lpType = 'creator';
+function lpSetType(type) {
+  _lpType = type;
+  const c = document.getElementById('lp-btn-creator');
+  const b = document.getElementById('lp-btn-brand');
+  if (!c || !b) return;
+  c.style.cssText = type==='creator'
+    ? `flex:1;padding:11px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:color-mix(in srgb,${G} 14%,transparent);border:1px solid color-mix(in srgb,${G} 32%,transparent);color:${G}`
+    : `flex:1;padding:11px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#666`;
+  b.style.cssText = type==='brand'
+    ? `flex:1;padding:11px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:color-mix(in srgb,${A} 14%,transparent);border:1px solid color-mix(in srgb,${A} 32%,transparent);color:${A}`
+    : `flex:1;padding:11px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid #2A2A2A;color:#666`;
+}
+async function lpSubmit() {
+  const name  = (document.getElementById('lp-name')?.value  || '').trim();
+  const email = (document.getElementById('lp-email')?.value || '').trim();
+  const msg   = document.getElementById('lp-msg');
+  if (!msg) return;
+  if (!name || !email) { msg.style.display='block'; msg.style.color=R; msg.textContent='Please fill in both fields.'; return; }
+  const { error } = await SB.from('waitlist').insert({ name, email, type: _lpType });
+  msg.style.display = 'block';
+  if (error) { msg.style.color=R; msg.textContent='Something went wrong — try again.'; }
+  else { msg.style.color=G; msg.textContent='🙌 You\'re on the list! We\'ll reach out personally.'; document.getElementById('lp-name').value=''; document.getElementById('lp-email').value=''; }
+}
+
 /* ── RENDER ── */
 const contentMap = {
   Notes: notes,
@@ -1481,42 +1614,55 @@ const contentMap = {
   Roadmap: roadmap,
   Competitive: competitive,
   Raise: raise,
+  'Landing Page': landingPage,
 };
 
-const nav = document.getElementById('nav');
-const main = document.getElementById('main');
+const nav    = document.getElementById('nav');
+const subnav = document.getElementById('subnav');
+const main   = document.getElementById('main');
 
-// Build nav buttons — workstation tabs first, then a divider, then the pitch deck
-sections.forEach((s, i) => {
-  // insert a visual divider between workstation tabs and the pitch deck
-  if (s === 'Vision') {
-    const sep = document.createElement('span');
-    sep.textContent = 'PITCH';
-    sep.style.cssText = "align-self:center;color:#444;font-size:9px;letter-spacing:.14em;font-weight:700;padding:0 6px 0 10px;border-left:1px solid var(--border);margin-left:6px";
-    nav.appendChild(sep);
+function buildNav() {
+  const g = GROUPS.find(x => x.key === activeGroup);
+  nav.innerHTML = GROUPS.map(gr => {
+    const active = activeGroup === gr.key;
+    return `<button onclick="selectGroup('${gr.key}')" style="padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;transition:all .15s;background:${active?`color-mix(in srgb,${gr.c} 13%,transparent)`:'transparent'};color:${active?gr.c:'var(--muted)'};border:1px solid ${active?`color-mix(in srgb,${gr.c} 25%,transparent)`:'transparent'}">${gr.label}</button>`;
+  }).join('');
+  if (g && g.tabs.length > 1) {
+    subnav.className = 'visible';
+    subnav.innerHTML = g.tabs.map(t => {
+      const active = activeTab === t;
+      return `<button onclick="selectTab('${t}')" style="padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;transition:all .15s;background:${active?`color-mix(in srgb,${g.c} 11%,transparent)`:'transparent'};color:${active?g.c:'var(--muted)'};border:1px solid ${active?`color-mix(in srgb,${g.c} 22%,transparent)`:'transparent'}">${t}</button>`;
+    }).join('');
+  } else {
+    subnav.className = '';
+    subnav.innerHTML = '';
   }
-  const btn = document.createElement('button');
-  btn.textContent = s;
-  btn.dataset.section = s;
-  if (workstationSections.includes(s)) btn.dataset.ws = '1';
-  if (s === 'Notes') btn.classList.add('active');
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderSection(s);
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  });
-  nav.appendChild(btn);
-});
+}
+
+function selectGroup(key) {
+  activeGroup = key;
+  activeTab = GROUPS.find(g => g.key === key).tabs[0];
+  buildNav();
+  renderSection(activeTab);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectTab(tab) {
+  activeTab = tab;
+  buildNav();
+  renderSection(tab);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 function renderSection(name) {
   main.innerHTML = `<div class="section active">${contentMap[name]()}</div>`;
   if (name === 'Taskboard') bindBoard();
 }
 
-// Boot: load from Supabase, render, then subscribe to real-time changes
+// Boot: load from Supabase, build nav, then subscribe to real-time changes
 (async () => {
   await loadTasks();
+  buildNav();
   renderSection('Notes');
   SB.channel('tasks-live')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, async () => {

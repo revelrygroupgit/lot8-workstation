@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LOT 8 — Workstation · Confidential</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #FF5C00;
+    --amber: #FFB800;
+    --dark: #0A0A0A;
+    --card: #111111;
+    --border: #1E1E1E;
+    --muted: #666666;
+    --light: #F5F5F0;
+  }
+
+  body {
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── TAG ── */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    background: color-mix(in srgb, var(--c) 9%, transparent);
+    color: var(--c);
+    border: 1px solid color-mix(in srgb, var(--c) 19%, transparent);
+    --c: var(--orange);
+  }
+  .tag.amber { --c: var(--amber); }
+  .tag.green { --c: #6BCB77; }
+  .tag.purple{ --c: #A78BFA; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 40px 0; }
+
+  /* ── METRIC ── */
+  .metric { text-align: center; }
+  .metric-value {
+    font-size: 42px;
+    font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: .02em;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .metric-label { color: var(--light); font-weight: 600; font-size: 13px; margin-top: 6px; }
+  .metric-sub   { color: var(--muted); font-size: 11px; margin-top: 3px; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background: #0A0A0AF0;
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    font-family: 'Bebas Neue', sans-serif; color: #0A0A0A; font-weight: 800;
+  }
+  .logo-name {
+    font-size: 20px; font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: .06em;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-sub { font-size: 10px; color: var(--muted); letter-spacing: .1em; margin-top: -2px; }
+  nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav button {
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-size: 12px; font-weight: 600; letter-spacing: .04em;
+    text-transform: uppercase; transition: all .15s; white-space: nowrap;
+    background: transparent; color: var(--muted);
+    border: 1px solid transparent; font-family: 'DM Sans', sans-serif;
+  }
+  nav button.active {
+    background: color-mix(in srgb, var(--orange) 13%, transparent);
+    color: var(--orange);
+    border-color: color-mix(in srgb, var(--orange) 25%, transparent);
+  }
+  nav button:hover:not(.active) { color: var(--light); }
+  nav button[data-ws].active {
+    background: color-mix(in srgb, #6BCB77 13%, transparent);
+    color: #6BCB77;
+    border-color: color-mix(in srgb, #6BCB77 25%, transparent);
+  }
+
+  /* ── CONTENT ── */
+  main { max-width: 960px; margin: 0 auto; padding: 48px 32px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── TYPOGRAPHY ── */
+  .h2 {
+    color: var(--light); font-size: 28px; font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: .04em; margin-bottom: 6px;
+  }
+  .h3 {
+    color: var(--light); font-size: 16px; font-weight: 700;
+    margin-bottom: 8px; margin-top: 28px;
+  }
+  .body { color: #AAAAAA; font-size: 14px; line-height: 1.7; }
+
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border-radius: 12px; overflow: hidden; }
+  .grid-4 > div { background: var(--card); padding: 28px; text-align: center; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; margin-top: 20px; }
+  .grid-5-score > div {
+    text-align: center; padding: 12px;
+    background: color-mix(in srgb, var(--orange) 5%, transparent);
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--orange) 13%, transparent);
+  }
+  .grid-4-raise { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
+
+  /* ── AUDIENCE CARD ── */
+  .audience-card { border-top: 3px solid var(--c); }
+  .aud-emoji { font-size: 36px; margin-bottom: 12px; }
+  .aud-title { color: var(--light); font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .aud-sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .prop-list { display: flex; flex-direction: column; gap: 10px; }
+  .prop-item { display: flex; gap: 10px; align-items: flex-start; }
+  .prop-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: color-mix(in srgb, var(--c) 13%, transparent);
+    border: 1px solid var(--c);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .prop-dot-inner { width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .prop-text { color: #CCCCCC; font-size: 13px; line-height: 1.5; }
+
+  /* ── AI FEATURE ── */
+  .ai-feature { display: flex; gap: 16px; align-items: flex-start; }
+  .ai-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: color-mix(in srgb, var(--orange) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--orange) 19%, transparent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .ai-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .ai-title { color: var(--light); font-weight: 700; font-size: 14px; }
+  .ai-desc { color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+  /* ── PHASE ── */
+  .phase { display: flex; gap: 24px; align-items: flex-start; }
+  .phase-num-col { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .phase-circle {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: color-mix(in srgb, var(--c) 13%, transparent);
+    border: 2px solid var(--c);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c); font-weight: 800; font-size: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+  }
+  .phase-line { width: 2px; height: 80px; background: linear-gradient(var(--c), transparent); margin-top: 4px; }
+  .phase-title { color: var(--light); font-weight: 700; font-size: 17px; }
+  .phase-period { font-size: 12px; font-weight: 600; margin-top: 2px; color: var(--c); }
+  .phase-tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .phase-items { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .phase-item { display: flex; gap: 8px; align-items: flex-start; }
+  .phase-arrow { color: var(--c); font-weight: 700; flex-shrink: 0; font-size: 13px; }
+  .phase-text { color: #BBBBB0; font-size: 13px; line-height: 1.5; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); background: var(--card); }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: color-mix(in srgb, var(--orange) 6%, transparent); border-bottom: 1px solid var(--border); }
+  th { padding: 14px 16px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; text-align: left; }
+  th.right { text-align: right; }
+  th.center { text-align: center; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  td { padding: 14px 16px; }
+
+  /* ── FLYWHEEL ── */
+  .flywheel-grid { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-top: 24px; }
+  .fw-item { text-align: center; }
+  .fw-circle {
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin: 0 auto 8px;
+    background: color-mix(in srgb, var(--c) 8%, transparent);
+    border: 2px solid color-mix(in srgb, var(--c) 25%, transparent);
+  }
+  .fw-arrow { color: var(--muted); font-size: 28px; line-height: 60px; width: 60px; margin: 0 auto 8px; }
+  .fw-label { font-weight: 700; font-size: 13px; }
+  .fw-sub { color: var(--muted); font-size: 11px; }
+
+  /* ── VISION HERO ── */
+  .hero-text {
+    font-size: 72px; font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: .02em; line-height: .95;
+    background: linear-gradient(135deg, var(--light) 40%, var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-text .orange { -webkit-text-fill-color: var(--orange); }
+
+  /* ── STAT GRID ── */
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 1px; background: var(--border);
+    border-radius: 12px; overflow: hidden; margin-bottom: 40px;
+  }
+  .stat-cell { background: var(--card); padding: 28px; text-align: center; }
+
+  /* ── INVESTOR ROWS ── */
+  .investor-row { display: flex; gap: 16px; align-items: flex-start; }
+  .inv-amount { flex-shrink: 0; min-width: 80px; text-align: right; }
+  .inv-amount-val { color: var(--amber); font-weight: 700; font-size: 14px; font-family: 'Bebas Neue', sans-serif; }
+  .inv-divider { width: 1px; background: var(--border); align-self: stretch; flex-shrink: 0; }
+  .inv-type { color: var(--light); font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .inv-source { color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .footer-logo { display: flex; align-items: center; gap: 10px; }
+  .footer-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    display: flex; align-items: center; justify-content: center; font-size: 17px;
+    font-family: 'Bebas Neue', sans-serif; color: #0A0A0A; font-weight: 800;
+  }
+  .footer-name {
+    font-size: 16px; font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: .06em;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .footer-copy { color: var(--muted); font-size: 11px; }
+  .footer-tags { display: flex; gap: 8px; }
+
+  /* ── GRADIENT CARD VARIANTS ── */
+  .card-gradient-orange {
+    background: linear-gradient(135deg, color-mix(in srgb,var(--orange) 7%,transparent), color-mix(in srgb,var(--amber) 4%,transparent));
+    border-color: color-mix(in srgb,var(--orange) 21%,transparent);
+  }
+  .card-gradient-raise {
+    background: linear-gradient(135deg, color-mix(in srgb,var(--orange) 9%,transparent), color-mix(in srgb,var(--amber) 4%,transparent));
+    border-color: color-mix(in srgb,var(--orange) 21%,transparent);
+  }
+  .card-series-a {
+    margin-top: 32px; text-align: center;
+    background: linear-gradient(135deg, color-mix(in srgb,var(--orange) 9%,transparent), color-mix(in srgb,var(--amber) 5%,transparent));
+    border-color: color-mix(in srgb,var(--orange) 19%,transparent);
+  }
+  .series-a-title {
+    font-size: 48px; font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 12px;
+  }
+
+  /* ── MOAT CARD ── */
+  .moat-title { font-weight: 700; margin-bottom: 8px; }
+
+  /* ── KPI BOX ── */
+  .kpi-box { margin-top: 20px; padding: 16px; border-radius: 8px; }
+
+  /* ── LOT 8 SCORE WEIGHT ── */
+  .score-weight { color: var(--orange); font-weight: 700; font-size: 16px; }
+  .score-label { color: var(--muted); font-size: 10px; margin-top: 4px; }
+
+  /* ── COMP TABLE LOT 8 COL ── */
+  .col-lot8 { color: var(--orange); font-size: 16px; }
+  .col-other { color: #555; font-size: 16px; }
+
+  /* ── UTIL ── */
+  .mt-16 { margin-top: 16px; }
+  .mt-20 { margin-top: 20px; }
+  .mt-24 { margin-top: 24px; }
+  .mt-32 { margin-top: 32px; }
+  .mt-40 { margin-top: 40px; }
+  .mb-8  { margin-bottom: 8px; }
+  .mb-12 { margin-bottom: 12px; }
+  .mb-16 { margin-bottom: 16px; }
+  .mb-20 { margin-bottom: 20px; }
+  .mb-40 { margin-bottom: 40px; }
+  .flex-col { display: flex; flex-direction: column; gap: 20px; }
+  .flex-col-16 { display: flex; flex-direction: column; gap: 16px; }
+  .flex-col-12 { display: flex; flex-direction: column; gap: 12px; }
+
+  /* ── BUSINESS MODEL CARDS ── */
+  .biz-card { border-left: 3px solid var(--c); }
+  .biz-head { display: flex; justify-content: space-between; margin-bottom: 12px; }
+  .biz-icon { font-size: 28px; }
+  .biz-title { color: var(--light); font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .biz-primary { font-weight: 700; font-size: 18px; font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; margin-bottom: 12px; }
+
+  /* ── ASSUMPTIONS TABLE ── */
+  .assump-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .assump-row:last-child { border-bottom: none; }
+  .assump-key { color: var(--muted); font-size: 12px; }
+  .assump-val { color: var(--light); font-size: 12px; font-weight: 600; }
+
+  /* ── CREATOR STATS ── */
+  .creator-stat { margin-bottom: 12px; padding-bottom: 12px; }
+  .creator-stat:last-child { border-bottom: none !important; }
+  .creator-stat-label { color: var(--muted); font-size: 11px; margin-bottom: 3px; }
+  .creator-stat-value { color: var(--light); font-size: 13px; font-weight: 600; }
+
+  /* ── FLYWHEEL CONTAINER ── */
+  .flywheel-container {
+    position: relative; margin: 40px 0; padding: 40px;
+    background: radial-gradient(ellipse at center, color-mix(in srgb,var(--orange) 5%,transparent) 0%, transparent 70%);
+    border: 1px solid var(--border); border-radius: 16px; text-align: center;
+  }
+  .flywheel-title {
+    font-size: 64px; font-weight: 800;
+    font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em;
+    background: linear-gradient(135deg, var(--orange), var(--amber));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 8px;
+  }
+
+  /* ── LOT 8 SCORE TRUST ── */
+  .trust-card {
+    background: linear-gradient(135deg, color-mix(in srgb,var(--orange) 5%,transparent), color-mix(in srgb,var(--amber) 3%,transparent));
+    border-color: color-mix(in srgb,var(--orange) 15%,transparent);
+    margin-top: 32px;
+  }
+  .trust-title { color: var(--light); font-weight: 700; font-size: 16px; margin-bottom: 16px; }
+
+  /* ── PLATFORM SECTION CREATOR CARDS ── */
+  .creator-card { border-top: 3px solid var(--c); }
+  .creator-card-emoji { font-size: 32px; margin-bottom: 12px; }
+  .creator-card-title {
+    font-weight: 800; font-size: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: .06em; margin-bottom: 16px;
+  }
+
+  /* ── MISSION/VISION CARD ── */
+  .mv-icon { font-size: 22px; margin-bottom: 12px; }
+  .mv-title { color: var(--light); font-weight: 700; margin-bottom: 8px; }
+
+  /* ── WHY CARD ── */
+  .why-card {
+    background: linear-gradient(135deg, color-mix(in srgb,var(--orange) 6%,transparent), color-mix(in srgb,var(--amber) 5%,transparent));
+    border-color: color-mix(in srgb,var(--orange) 19%,transparent);
+  }
+  .why-title { color: var(--light); font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+
+  /* ── GTM PHASE-0 ── */
+  .phase0-card { border-left: 3px solid var(--orange); }
+  .phase0-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .phase0-col-title { color: var(--orange); font-weight: 700; font-size: 12px; margin-bottom: 8px; }
+  .phase0-item { display: flex; gap: 8px; margin-bottom: 6px; }
+  .phase0-item span:first-child { color: var(--orange); }
+  .phase0-item span:last-child { color: #BBBBAA; font-size: 13px; }
+
+  /* ── TIKTOK SHOP CARD ── */
+  .tiktok-card {
+    background: linear-gradient(135deg, color-mix(in srgb,var(--orange) 6%,transparent), transparent);
+    border-color: color-mix(in srgb,var(--orange) 19%,transparent);
+  }
+
+  /* ── USE-OF-FUNDS CARD ── */
+  .fund-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .fund-label { color: var(--light); font-weight: 700; font-size: 13px; }
+  .fund-amount { color: var(--amber); font-weight: 700; font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
+  .fund-pct { color: var(--muted); font-size: 11px; margin-left: 6px; }
+
+  /* ── COMPETITIVE MOATS ── */
+  .moat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ── TASKBOARD ── */
+  .tb-board { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .tb-col { background: color-mix(in srgb, var(--card) 60%, transparent); border: 1px solid var(--border); border-radius: 12px; padding: 14px; min-height: 240px; transition: background .15s, border-color .15s; }
+  .tb-col-over { background: color-mix(in srgb, var(--orange) 6%, transparent); border-color: color-mix(in srgb, var(--orange) 30%, transparent); }
+  .tb-col-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .tb-col-body { display: flex; flex-direction: column; gap: 10px; min-height: 60px; }
+  .tb-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: grab; transition: transform .1s, border-color .15s; }
+  .tb-card:hover { border-color: #333; transform: translateY(-1px); }
+  .tb-card:active { cursor: grabbing; }
+  .tb-empty { color: #444; font-size: 11px; text-align: center; padding: 24px 0; border: 1px dashed var(--border); border-radius: 8px; }
+  .tb-move { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 22px; height: 22px; border-radius: 5px; cursor: pointer; font-size: 11px; line-height: 1; padding: 0; font-family: 'DM Sans', sans-serif; transition: all .12s; }
+  .tb-move:hover { border-color: #444; color: var(--light); }
+  .tb-filter:hover { color: var(--light) !important; }
+
+  @media (max-width: 700px) {
+    header { padding: 16px; }
+    main { padding: 24px 16px; }
+    .grid-2, .grid-3, .grid-4, .stat-grid, .phase0-grid, .moat-grid, .grid-4-raise, .tb-board { grid-template-columns: 1fr; }
+    .grid-5 { grid-template-columns: repeat(3,1fr); }
+    .hero-text { font-size: 48px; }
+    nav button { padding: 6px 10px; font-size: 11px; }
+    footer { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">8</div>
+    <div>
+      <div class="logo-name">LOT 8</div>
+      <div class="logo-sub">WORKSTATION · CONFIDENTIAL</div>
+    </div>
+  </div>
+  <nav id="nav"></nav>
+</header>
+
+<main id="main"></main>
+
+<footer>
+  <div class="footer-logo">
+    <div class="footer-icon">8</div>
+    <span class="footer-name">LOT 8</span>
+  </div>
+  <div class="footer-copy">Internal Workstation · Updated 23 June 2026 · Watch · Chat · Buy</div>
+  <div class="footer-tags">
+    <span class="tag">Entertainment</span>
+    <span class="tag amber">Commerce</span>
+    <span class="tag green">Community</span>
+  </div>
+</footer>
+
+<script>
+const O = '#FF5C00', A = '#FFB800', G = '#6BCB77', P = '#A78BFA', R = '#F87171', C = '#67E8F9';
+
+const sections = ["Notes","Action Plan","Taskboard","Vision","Platform","Value Props","AI Core","Business Model","Financials","Go-to-Market","Roadmap","Competitive","Raise"];
+const workstationSections = ["Notes","Action Plan","Taskboard"];
+
+/* ── helpers ── */
+const tag = (text, color=O) => `<span class="tag" style="--c:${color}">${text}</span>`;
+const h2 = t => `<div class="h2 mt-16">${t}</div>`;
+const h3 = t => `<div class="h3">${t}</div>`;
+const body = t => `<div class="body">${t}</div>`;
+const card = (html, style='') => `<div class="card" style="${style}">${html}</div>`;
+const metric = (v,l,s='') => `<div class="metric"><div class="metric-value">${v}</div><div class="metric-label">${l}</div>${s?`<div class="metric-sub">${s}</div>`:''}</div>`;
+
+/* ════════════════════════════════════════════════
+   WORKSTATION — Notes / Action Plan / Taskboard
+   ════════════════════════════════════════════════ */
+
+/* ── NOTES (Meeting Summary) ── */
+const noteBlock = (title, color, items) => `
+  <div class="card" style="border-left:3px solid ${color};margin-bottom:16px">
+    <div style="color:${color};font-weight:700;font-size:14px;margin-bottom:12px;letter-spacing:.02em">${title}</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${items.map(i=>`<div style="display:flex;gap:10px;align-items:flex-start"><span style="color:${color};font-size:12px;flex-shrink:0;margin-top:2px">▪</span><span style="color:#BBBBAA;font-size:13px;line-height:1.55">${i}</span></div>`).join('')}
+    </div>
+  </div>`;
+
+/* meeting log — newest first */
+const MEETINGS = [
+  {
+    id:'2026-06-23', date:'23 Jun 2026', label:'Jun 23', accent:C,
+    title:'BUILD SPRINT: CAPACITY, LANDING PAGE & "BUILDER MODE"',
+    intro:'A build-sprint check-in with Josh. Theme: stop deliberating and ship — capacity and execution are the bottleneck, not strategy. (Reconstructed from the raw Granola transcript — no summary had generated; some proper nouns were garbled, so confirm specifics.)',
+    stats:[['Builder','Mode On'],['5 × 5','Brands × Creators'],['YouTube','v1 Stream'],['~$120K','F&F Round']],
+    statsLabel:'Sprint Check-in',
+    statsAccent:C,
+    left:[
+      ['Builder Mode, Not Thinking Mode', O, [
+        'Decision: stop deliberating — <strong style="color:var(--light)">divide and conquer, everyone ships something</strong>. "It won\'t be perfect, it\'ll work."',
+        'The blocker is <strong style="color:var(--light)">capacity + execution</strong>, not strategy: founders have day jobs and "we\'ll do it today" keeps slipping.',
+        'Idea floated: bring in <strong style="color:var(--light)">interns / uni CS students to vibe-code</strong> the build out fast.',
+        'Each founder owns one slice and ships it — momentum and confidence compound.',
+      ]],
+      ['Overlay Reaffirmed', A, [
+        'Still the overlay: <strong style="color:var(--light)">build the infrastructure + data, not the platform itself</strong> (yet).',
+        'The "lower, achievable bar" re-energised the team after platform-ownership felt daunting.',
+        'Multiple build blueprints now exist; Josh has progressed the brand.',
+      ]],
+      ['Back-end to Map', G, [
+        'Define the <strong style="color:var(--light)">end-to-end flow</strong>: someone streams → there\'s a link → where does the link go → how does the stream get onto the link?',
+        'Arjun goes heads-down to <strong style="color:var(--light)">code the overlay back-end until it runs</strong>.',
+      ]],
+    ],
+    right:[
+      ['Stream Preference', P, [
+        '<strong style="color:var(--light)">YouTube is the v1 target</strong> — easiest to embed/link.',
+        'TikTok is hard (blocked; pushes its own); Instagram may have an API; Twitch + others later.',
+      ]],
+      ['Landing Page + Intent Capture', C, [
+        '<strong style="color:var(--light)">Landing page must ship with the pitch</strong> — the "landing bed" for creators and brands.',
+        'Capture <strong style="color:var(--light)">sign-ups = intent</strong>: get concrete creators and brands to register on the site.',
+        'Warm brand outreach: "let\'s grab a coffee about the e-commerce opportunities happening now."',
+        'Consider an Instagram with real pull + paid ads → link in bio to the page.',
+      ]],
+      ['Funding — Small & Scrappy', R, [
+        'Dialed back the ~$1.5M seed idea (it would need everyone full-time). Settled on a <strong style="color:var(--light)">~$120–150K friends-family-&-fools SAFE</strong>.',
+        'Logic: bootstrap to ~$1M revenue (even contracted), then raise a larger round at ~10x.',
+        'Targets: consumer / FMCG-friendly angels. <em>Revelry-level — appears to span Lot 8 + Helado.</em>',
+      ]],
+      ['Capacity Context — Helado', A, [
+        'Josh leaned toward <strong style="color:var(--light)">Helado</strong> this week (Andrew away): WA introductions and two large QLD IGA groups (~12 stores each) for possible NBL activations in January; ~a dozen retailers verbally interested, not yet converted.',
+        'Noted because it splits Lot 8 bandwidth — reinforces the capacity crunch.',
+      ]],
+    ],
+    flags:`<strong style="color:var(--light)">1. "Builder mode" is the right call — protect it.</strong> The recurring failure mode here is re-deciding settled things; the fix isn't more planning, it's one shippable slice each. Lock a hard v1 scope (the overlay + a landing page that captures 5 brand and 5 creator sign-ups) and a date, and treat everything else as out of scope until that ships.<br><br><strong style="color:var(--light)">2. Interns / vibe-coders add throughput but also risk.</strong> They bring coordination cost and IP/quality exposure on the one thing that must be bulletproof — payments. If you bring them in, fence them to the landing page / front-end and keep Stripe and checkout in-house.<br><br><strong style="color:var(--light)">3. Define what the $120–150K SAFE actually funds.</strong> Sensible bootstrap, but a SAFE that's ambiguous about which entity it converts into — Lot 8, Helado, or Revelry — causes real pain later. Pin the entity and use of funds before taking cheques.`,
+  },
+  {
+    id:'2026-06-14', date:'14 Jun 2026', label:'Jun 14', accent:O,
+    title:'ERIN ADVISORY: START WITH FRICTIONLESS COMMERCE',
+    intro:'A long session with Erin (a.k.a. YungDaenerys on Instagram/TikTok — creator, 100M+ views, AusPost). The big takeaway reorders the plan: build the frictionless-commerce overlay first, earn matchmaking from the data, and only then a platform. Source: Granola.',
+    stats:[['Overlay','v1 Product'],['5 × 5','Products × Creators'],['~1 mo','Test Window'],['YT + Twitch','v1 Rails']],
+    statsLabel:'v1, Refined',
+    statsAccent:O,
+    left:[
+      ['Erin\'s Big Call', O, [
+        'Three problems: (1) frictionless one-click commerce, (2) brand/creator matchmaking, (3) a new attention platform.',
+        'Erin: <strong style="color:var(--light)">only frictionless commerce is worth starting with</strong>. Matchmaking = competing with every media agency; a new platform = hardest, most expensive, near-impossible.',
+        'Pathway: <strong style="color:var(--light)">solve checkout first → use the data to earn matchmaking → then platform</strong>.',
+        'This moves "the brain" (matching) behind the overlay.',
+      ]],
+      ['The Overlay — v1 Product', A, [
+        'A <strong style="color:var(--light)">stream companion</strong>, not a native integration: QR code / pinned link in the stream.',
+        'Viewer lands on a page — stream embedded + product on screen → <strong style="color:var(--light)">one-click Stripe buy</strong>; details saved for next time.',
+        'A second screen shows the creator <strong style="color:var(--light)">live earnings</strong> mid-stream ("$50 this hour — more than any sponsorship").',
+        'Fast-follow: <strong style="color:var(--light)">Claude product Q&A</strong> from uploaded info only, no hallucination ("is this good for oily skin?").',
+      ]],
+      ['The Wedge — AU Creator Monetisation', G, [
+        'No TikTok creator fund in Australia. Aus brands want 80%+ domestic viewers; most Aus creators skew overseas.',
+        'Erin has 100M+ views and brand interest — and <strong style="color:var(--light)">still made no money</strong>. YouTube ad rev doesn\'t translate either.',
+        'Most creators lean on a day job or their own product.',
+        'Erin: <strong style="color:var(--light)">solve this in Australia and it scales everywhere</strong>.',
+      ]],
+    ],
+    right:[
+      ['Platform Constraints', P, [
+        'YouTube & Twitch are <strong style="color:var(--light)">web-based</strong> → stream URL scrapeable, overlay feasible.',
+        'Instagram Live is <strong style="color:var(--light)">app-based</strong> → likely not browser-accessible; embedded overlay probably out for v1.',
+        'No API to push/pull native live chat (Meta/Google blocked).',
+        'Multi-stream bans on Twitch/YT seem lifted — <strong style="color:var(--light)">confirm legality</strong> before risking creators.',
+      ]],
+      ['v1 Build & Stack', C, [
+        'v1 = overlay + checkout only; no native content integration.',
+        'Stack: Cord, Stripe (payment element + saved customer), Supabase, Twilio, Claude API; <strong style="color:var(--light)">PostHog</strong> for click/conversion data.',
+        'Shipping handled <strong style="color:var(--light)">manually post-stream</strong> for v1; flat-rate vs free-over-threshold TBD.',
+        'Register <strong style="color:var(--light)">"Lot 8"</strong> as a business (separate from Revelry) for IG verification + outreach credibility.',
+        'Arj to deploy a <strong style="color:var(--light)">shared command center</strong> — live taskboard + auto-ingested Granola notes (this dashboard).',
+      ]],
+      ['v1 Test Plan', R, [
+        'Target: <strong style="color:var(--light)">5 products · 5 creators · ~1 month</strong> of streams.',
+        'Creators keep <strong style="color:var(--light)">100% of the 10% cut</strong> for the trial; team absorbs Stripe (~2.9% + 30c).',
+        'Brands: a beauty brand (Sarah\'s leads), <strong style="color:var(--light)">Bon Emil</strong> (high-ticket test; Jaime\'s contact), a fashion/athleisure brand.',
+        'Creators: existing <strong style="color:var(--light)">live streamers</strong> — TikTok GRWM/try-on, smaller Aus Twitch; high-energy, camera-comfortable.',
+        '"Australia only — join the waitlist" from day one. <strong style="color:var(--light)">Don\'t sandbag</strong>: bad early data poisons fundraising.',
+      ]],
+    ],
+    flags:`<strong style="color:var(--light)">1. This reorders the strategy — make it explicit.</strong> Erin's advice flips the sequence: the frictionless-commerce overlay is v1, matchmaking ("the brain") becomes Phase 2 from the overlay data, the platform is Phase 3. Cleaner and cheaper, and I'd back it — but it contradicts the brain-first framing in the deck and earlier notes. Reconcile the deck + Action Plan to overlay-first before fundraising.<br><br><strong style="color:var(--light)">2. Instagram drops out of v1 — re-scope the pilot.</strong> The 7–9 Jun plan leaned on IG (10 IG Live, IG-comment purchases). The embedded overlay needs scrapeable web streams (YouTube/Twitch). Decide now: is IG fully out, or does the pinned-link checkout still serve IG (just without the embedded stream view)? That answer changes who you recruit. And confirm Twitch/YouTube multi-streaming legality before putting any creator at risk.<br><br><strong style="color:var(--light)">3. Trial take rate is 0% to the platform (you absorb Stripe).</strong> Fine to seed the trial, but the real economics stay unproven and the 2–3% vs 5–8% question is still open. Don't let "creators keep everything" harden into an expectation you can't unwind at scale.`,
+  },
+  {
+    id:'2026-06-09', date:'9 Jun 2026', label:'Jun 9', accent:A,
+    title:'OTTO THE MASCOT, THE AUCTION LENS & A PUNCHIER LOOK',
+    intro:'The mascot got a name and a backstory, the visual direction got sharper (more punch, fluoro-on-dark), the three sides get colour-coded, and the dream-brand + auctioneer-creator playbook took shape. Pilot starts next week. Source: Granola.',
+    stats:[['Otto','Named Mascot'],['∞','Auction / Infinity Lens'],['Next wk','Pilot Starts'],['3','Colour-coded Sides']],
+    statsLabel:'Today\'s Moves',
+    statsAccent:A,
+    left:[
+      ['Meet "Otto" — the Mascot', A, [
+        'Mascot named <strong style="color:var(--light)">Otto</strong>: the two O\'s are the sideways-8 as <strong style="color:var(--light)">eyes</strong>.',
+        '"Otto" = <strong style="color:var(--light)">octo</strong> (eight) + <strong style="color:var(--light)">auto</strong> (automated matchmaking) — the AI that watches and pairs.',
+        'Lives in chat as the platform\'s voice: time warnings, item alerts, drop reminders — not cold system messages.',
+        'Auction lens + <strong style="color:var(--light)">infinity (sideways 8)</strong> stay core to the identity.',
+      ]],
+      ['Visual Direction — More Punch', O, [
+        'Current design reads <strong style="color:var(--light)">too passive</strong> for an entertainment platform — needs punch, contrast, edge.',
+        'Preferred: <strong style="color:var(--light)">dark mode with fluorescent-yellow highlights</strong>.',
+        'Colour psychology: shift away from teal (trust) toward <strong style="color:var(--light)">red/orange (excitement, energy)</strong>.',
+        '<strong style="color:var(--light)">Colour-code the three sides</strong> — distinct colours for watchers, creators, brands.',
+      ]],
+      ['Language', G, [
+        '"Leaders of taste" confirmed too pushy/sales-heavy — dropped for good.',
+        'Drop "exhibit" terminology; just say <strong style="color:var(--light)">"streams"</strong>.',
+      ]],
+    ],
+    right:[
+      ['Dream Brands & Creators', P, [
+        'Target <strong style="color:var(--light)">legacy global brands</strong>: 50+ years, 50+ countries (Ferrari, Porsche, Gucci). Depth of presence over personal familiarity.',
+        '<strong style="color:var(--light)">Auctioneer-creator</strong> concept: cold-email traditional auctioneers (40+, keen to grow sales). Co-stream: seasoned auctioneer + young creator.',
+        'Spectrum from A-list (Margot Robbie × Gucci) to local community creators.',
+      ]],
+      ['The Differentiator', C, [
+        '<strong style="color:var(--light)">Transparent product integration</strong> vs "dirty thrown-in ads".',
+        'One-click purchasing inside the entertainment.',
+        '<strong style="color:var(--light)">Creator commission shown to the audience</strong> — honesty as a feature.',
+        'Inspiration: Kevin Hart × Kai Cenat, T-Pain on Twitch, in-game collabs.',
+      ]],
+      ['Pilot — Starts Next Week', R, [
+        'Priority: interview <strong style="color:var(--light)">Bon Emil</strong> (Jaime\'s contact) — sales/marketing approach, appetite for creator partnerships, success metrics + data needs.',
+        '3 months, weekly planned streams across platforms; test <strong style="color:var(--light)">direct sales vs gamified entertainment</strong>.',
+        'Manual stream management; <strong style="color:var(--light)">landing page for Instagram-comment purchases</strong>; post-stream brand touchpoints for fulfilment tracking.',
+        'Track every creator–brand pairing and its performance.',
+      ]],
+    ],
+    flags:`<strong style="color:var(--light)">1. Otto is a strong, ownable system — lock the constraints now.</strong> The two-O's-as-eyes must read as both "8 / infinity" and a face, hold up at favicon size, and animate (idle / live / alert). A named in-chat mascot also needs a voice + tone spec and guardrails — Otto talks to a young audience, so keep it warm and never pushy, and treat its alerts as honest nudges, not pressure.<br><br><strong style="color:var(--light)">2. Fluoro-yellow + red/orange + three side-colours = up to five signal colours.</strong> Great for energy, risky for legibility. Define a strict hierarchy — one hero accent, the rest strictly functional — or it reads chaotic. Fluoro yellow on dark fails contrast for body text; use it for accents and highlights only, never paragraphs.<br><br><strong style="color:var(--light)">3. Keep the "dream brands" labelled as aspiration.</strong> Ferrari/Porsche/Gucci/Margot Robbie is a vision board; the pilot actually lands on Bon Emil, auctioneers and local creators. Don't let the deck imply A-list access we haven't secured.`,
+  },
+  {
+    id:'2026-06-07', date:'7 Jun 2026', label:'Jun 7', accent:R,
+    title:'PILOT LOCKED, BRAND MODEL & THE EYES MASCOT',
+    intro:'The pilot got concrete (stream counts, start date, payments), the brand partnership model and take rate were defined, and the identity shifted: "Leaders of Taste" dropped for "Watch Chat Buy" + an eyes mascot. Source: Granola.',
+    stats:[['$50K','3-Mo GMV'],['13','Streams · 10 IG·2 WN·1 eBay'],['13%','Total Take'],['Week 3','Pilot Start']],
+    statsLabel:'Pilot v2 — Locked',
+    statsAccent:R,
+    left:[
+      ['Branding Update', O, [
+        'Dropping <strong style="color:var(--light)">"Leaders of Taste"</strong>. New tagline: <strong style="color:var(--light)">"Watch · Chat · Buy"</strong>. Positioning: <strong style="color:var(--light)">"Entertainment is the future storefront."</strong>',
+        'Logo evolution: turn the <strong style="color:var(--light)">8 into a pair of eyes</strong> — a mascot signalling AI watching/matching, animatable (sleeping, excited, dollar-signs).',
+        'Dark-mode aesthetic preferred. Instagram handle <strong style="color:var(--light)">@la.live</strong> established.',
+      ]],
+      ['Brand Partnership Model', A, [
+        'Any creator can sell any product at the brand\'s <strong style="color:var(--light)">retail price</strong>. Discounted sales require brand approval.',
+        'Visual trust cue: <strong style="color:var(--light)">gold border/button</strong> marks brand-approved sellers.',
+        'Brand controls inventory; creator gets a limited stock allocation.',
+        'Economics: <strong style="color:var(--light)">10% to creator, 2–3% platform fee (~13% total)</strong> — pitched as below competitors.',
+      ]],
+      ['Creator Targets', P, [
+        '<strong style="color:var(--light)">Sports/athletes</strong>: NBL live merch, score predictions, event-tied discounts — no betting.',
+        '<strong style="color:var(--light)">Tech</strong>: MKBHD, Unbox Therapy, JerryRigEverything — reviews, unboxings, teardowns with buy buttons.',
+        '<strong style="color:var(--light)">Gaming/entertainment</strong>: Twitch/YT live, KaiCenat / IShowSpeed energy.',
+        '<strong style="color:var(--light)">Luxury/fashion</strong>: Supercar Blondie, CarExpert, leather-goods teardowns vs comparable products.',
+      ]],
+    ],
+    right:[
+      ['Pilot Structure', G, [
+        '<strong style="color:var(--light)">$50K GMV over 3 months.</strong> 10 Instagram Live + 2 Whatnot + 1 eBay Live.',
+        'Starts <strong style="color:var(--light)">Week 3</strong> — two weeks of prep first.',
+        'MVP flow is manual: <strong style="color:var(--light)">DM purchase links during streams.</strong>',
+        'Test variables: peak times (evening 6–8pm), content format, chat velocity vs conversion, scarcity impact, platform-specific performance.',
+      ]],
+      ['Content & Scarcity', C, [
+        'Formats to test: product reviews/teardowns, try-on hauls, gaming streams with product integration, live auctions and limited drops.',
+        'Scarcity & urgency: time-limited streams and products, exclusive access for loyal subscribers.',
+        '"Unus Annus"-style temporary-content model as an engagement lever.',
+      ]],
+      ['Ops, Payments & Logistics', O, [
+        'Brands handle inventory, shipping and returns; platform tracks conversion and return rates.',
+        'Payments: <strong style="color:var(--light)">Stripe</strong> first ($75K free transactions), Apple Pay / Google Pay a priority.',
+        'Need a <strong style="color:var(--light)">creator liaison</strong> for stream management.',
+        'Hard deadline: <strong style="color:var(--light)">landing page + pitch deck by end of next week</strong>; creator shortlist by EOW. Leads: Snap Cash founder, a 250K-TikTok colleague, a TCG store.',
+      ]],
+    ],
+    flags:`<strong style="color:var(--light)">1. The 2–3% platform fee contradicts the deck — and may be too thin.</strong> The deck's financials assume a 5–8% GMV take as the primary engine; today set platform fee at 2–3%. On the $50K pilot that's only ~$1–1.5K of platform revenue, fine for learning. But at scale, 2–3% has to cover Stripe (~1.75% + 30c in AU), returns handling and trust/ops — verify the model isn't underwater before this number goes in front of investors. Reconcile with the deck.<br><br><strong style="color:var(--light)">2. Manual DM purchase links break the "one-tap, no friction" promise — measure the gap.</strong> Right call for a 2-week MVP, but DM links are the exact friction the product exists to remove, and they're hard to attribute to a stream moment. Track conversion and attribution carefully so Phase 2's in-stream checkout has a real baseline to beat.<br><br><strong style="color:var(--light)">3. The brand mockup is now partly stale.</strong> v2 still leads on "Where taste goes live" / Leaders of Taste and uses the figure-8 loop mark — today replaced that with "Watch · Chat · Buy" and an eyes mascot. The mockup needs a refresh to match.`,
+  },
+  {
+    id:'2026-06-02', date:'2 Jun 2026', label:'Jun 2', accent:O,
+    title:'BRANDING LOCK-IN: LOT 8 & THE TWO-PHASE PLAY',
+    intro:'Brand name decided, three principles set, positioning sharpened to "anti-Whatnot", and the strategy refined into a clear two-phase play. Source: Granola.',
+    stats:[['LOT 8','Brand Name'],['3','Core Principles'],['2','Phases'],['Phase 1','Build "the brain"']],
+    statsLabel:'Today\'s Decisions',
+    statsAccent:O,
+    left:[
+      ['Brand Decision — LOT 8', O, [
+        '<strong style="color:var(--light)">Lot 8</strong> chosen as the primary brand. "LOT" = <strong style="color:var(--light)">Leaders Of Taste</strong> (creator-led, fashion-forward).',
+        '"8" implies luck/luxury — auspicious in Asian markets. Also reads as <strong style="color:var(--light)">Lotus</strong>: emblem of guidance and wealth.',
+        'Domain available — a bakery held it, voluntarily deregistered in 2023.',
+        'Open concern: current direction skews too luxury. Pull toward <strong style="color:var(--light)">entertainment-young</strong> — Studio 54 energy, not Gucci.',
+      ]],
+      ['Three Principles', A, [
+        '<strong style="color:var(--light)">Fun</strong> — entertainment first. A stage for creators to be entertaining around products.',
+        '<strong style="color:var(--light)">Trusted</strong> — legit creators, not sales bots. Brands trust us; creators trust us with their community.',
+        '<strong style="color:var(--light)">Fast</strong> — immediate purchase, urgent ops, spin up new events and segments quickly.',
+      ]],
+      ['Positioning — Anti-Whatnot', G, [
+        'Entertainment overlay on a marketplace — not commerce-first like Whatnot (whose name literally references the goods).',
+        'Elevated but mainstream: Nike, LSKD — not collectibles and niche communities.',
+        'Need the masses, not premium-luxury. "Premium" = quality of experience, not Gucci/Prada.',
+        'Interest vs intent: reach people interested in a product, not only those actively trying to buy.',
+      ]],
+    ],
+    right:[
+      ['China Signal (via Tina)', C, [
+        'Live streaming is everywhere — historical sites, tours, hotel lobbies.',
+        'Hotels offer discounted rooms booked through the lobby livestreamer, then and there.',
+        'Her granddad checks Douyin/TikTok for tour reviews before booking — livestream is the default trust layer.',
+        'Confirms the thesis: Douyin/Taobao/TikTok are entertainment-first; commerce is the overlay.',
+      ]],
+      ['Refined Value Props', P, [
+        '<strong style="color:var(--light)">Viewers</strong>: fun videos via creators they like, real community, one-click purchase while watching — never pressured.',
+        '<strong style="color:var(--light)">Creators</strong>: earn more than anywhere else, built-in brand tools + community sponsorship/donations, no stock management — just create.',
+        '<strong style="color:var(--light)">Brands</strong>: pay-per-purchase (guaranteed ROI, no wasted ad spend), curated creator matching, engaged communities with lower returns.',
+      ]],
+      ['Strategy — Two Phases', R, [
+        '<strong style="color:var(--light)">Phase 1:</strong> Lot 8 is the "brain" — creator↔brand matching + event curation. Drive traffic to existing rails (Whatnot, eBay Live, IG Live) and harvest learnings.',
+        '<strong style="color:var(--light)">Phase 2:</strong> Launch own entertainment platform; bring creators/brands across; kill the friction found in testing. Consumer app may carry "powered by Lot 8" framing, but we are consolidating on a single Lot 8 brand for now.',
+        'For investors: keep it to ONE story now. A three-sided "we do everything" pitch reads as overreach.',
+      ]],
+    ],
+    flags:`<strong style="color:var(--light)">1. Brand architecture: now consolidated to a single brand — Lot 8.</strong> The earlier idea of a separate consumer-app name over a Lot 8 "brain/backend" has been dropped in favour of one brand across all three sides. Cleaner for recall and for investors; just keep Phase 1 (the matching brain) and Phase 2 (the platform) as one continuous Lot 8 story, not two products.<br><br><strong style="color:var(--light)">2. "Elevated + mainstream + entertainment-young" is three constraints pulling in different directions.</strong> Studio 54 was exclusive; Nike/LSKD is mass; entertainment-young skews chaotic. The brand can hold maybe two of these cleanly. My read: lead with entertainment-young + mainstream, let "taste/curation" be the premium signal rather than visual luxury. The mockup is built on that call.`,
+  },
+  {
+    id:'2026-05-31', date:'31 May 2026', label:'May 31', accent:C,
+    title:'PLATFORM STRATEGY & PILOT PLANNING',
+    intro:'Platform strategy, pilot planning, and branding for live commerce. The first canonical record. Source: Granola.',
+    stats:[['$50K','3-Month GMV'],['5','Core Creators'],['5','Brands Tested'],['3 mo','Pilot Window']],
+    statsLabel:'The "555" Strategy',
+    statsAccent:C,
+    left:[
+      ['Tech Stack & Workflow', O, [
+        'Granola for meeting notes; Claude for storage & processing.',
+        'Slack replaces WhatsApp for work — dedicated channels per idea/task, Claude callable directly from Slack.',
+        'WhatsApp reserved for informal meeting setup only.',
+        'Task tracker built in Claude (HTML-based). Notion considered but deemed unnecessary.',
+      ]],
+      ['Platform Strategy & Model', A, [
+        'Entertainment-first, NOT intent-driven commerce. Competing with TikTok/YouTube/IG for attention, not Amazon.',
+        'Interest-driven purchases (watch cooking show → buy ingredients).',
+        'Three-sided marketplace: Audience (priority) → Creators → Brands.',
+        'Revenue = % of GMV, no subscriptions, no upfront cost. Only profitable when platform drives sales.',
+      ]],
+      ['Target Market', G, [
+        'Positioning modelled on Douyin: start Gen Z, expand to 30s-40s, growing 50+ for wellness.',
+        'Bamboo = enterprise, brand-first subscription. CommentSold = creator subscription. Social Cat = matchmaking, not live.',
+        'Differentiate on entertainment value over pure transaction.',
+      ]],
+    ],
+    right:[
+      ['Pilot Framework', P, [
+        'Test 5 creator archetypes: IG influencer, YouTuber, Twitch streamer, salesperson new to live, total novice.',
+        'Test 3 categories: cosmetics/beauty, fashion/clothing, collectibles/toys.',
+        'Rails: eBay Live, Instagram Live, Shopify integration.',
+      ]],
+      ['Acquisition Strategy', R, [
+        'Target existing live commerce participants over cold outreach (Whatnot, IG Live sellers).',
+        'Value prop: higher earnings via better brand partnerships + easier checkout.',
+        'IG ads seeking 30-sec product pitch videos.',
+        'Brand targets: Hawk High Vintage (40 streams/wk), Culture Kings, Princess Polly, local game/toy shops.',
+        'Brand offer: no monthly fees, commission-only, low risk.',
+      ]],
+      ['Branding & Identity', C, [
+        'Platform as invisible enablement layer — not attention-grabbing. Creators & brands are the focus.',
+        'Mascot: unimpressed character (toad/sloth) = "hard to impress" standard.',
+        'Names floated: Rivet, Covet, Lot + number combinations.',
+        'Need social presence + landing page before pilot launch.',
+      ]],
+    ],
+    flags:`<strong style="color:var(--light)">1. GMV target is a learning milestone, not a revenue one.</strong> $50K over 3 months across 5 creators ≈ $3.3K GMV/creator/month. At a 10% take that's ~$1,650/mo total. Frame it internally as proof-of-concept, not traction.<br><br><strong style="color:var(--light)">2. The deck is ahead of the strategy.</strong> The pitch deck describes a heavy cross-platform OS + AI coaching + $750K raise. This note describes a leaner entertainment-first thesis on existing rails. Reconcile before fundraising.`,
+  },
+];
+
+let currentMeetingId = MEETINGS[0].id;
+function selectMeeting(id){ currentMeetingId = id; renderSection('Notes'); window.scrollTo({top:0,behavior:'smooth'}); }
+
+const notes = () => {
+  const m = MEETINGS.find(x=>x.id===currentMeetingId) || MEETINGS[0];
+  const selector = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:24px">
+      <span style="color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-right:4px">Meeting log</span>
+      ${MEETINGS.map(mt=>{
+        const on = mt.id===currentMeetingId;
+        return `<button onclick="selectMeeting('${mt.id}')" style="padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:${on?`color-mix(in srgb,${mt.accent} 14%,transparent)`:'transparent'};border:1px solid ${on?`color-mix(in srgb,${mt.accent} 32%,transparent)`:'var(--border)'};color:${on?mt.accent:'var(--muted)'}">${mt.date}${mt.id===MEETINGS[0].id?' · latest':''}</button>`;
+      }).join('')}
+    </div>`;
+  return `
+  ${tag('Meeting · '+m.date, m.accent)}
+  ${h2(m.title)}
+  ${body(m.intro)}
+  ${selector}
+
+  <div class="card" style="background:linear-gradient(135deg,color-mix(in srgb,${m.statsAccent} 7%,transparent),transparent);border-color:color-mix(in srgb,${m.statsAccent} 21%,transparent);margin-bottom:32px">
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:space-around">
+      ${m.stats.map(([v,l])=>`<div style="text-align:center"><div style="font-size:34px;font-weight:800;font-family:'Bebas Neue',sans-serif;background:linear-gradient(135deg,${O},${A});-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1">${v}</div><div style="color:var(--light);font-weight:600;font-size:12px;margin-top:6px">${l}</div></div>`).join('')}
+    </div>
+    <div style="text-align:center;margin-top:16px;color:${m.statsAccent};font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">${m.statsLabel}</div>
+  </div>
+
+  <div class="grid-2">
+    <div>${m.left.map(b=>noteBlock(b[0],b[1],b[2])).join('')}</div>
+    <div>${m.right.map(b=>noteBlock(b[0],b[1],b[2])).join('')}</div>
+  </div>
+
+  ${card(`<div class="why-title" style="color:${R}">⚠ Co-founder flags</div>${body(m.flags)}`, `margin-top:16px;background:linear-gradient(135deg,color-mix(in srgb,${R} 6%,transparent),transparent);border-color:color-mix(in srgb,${R} 21%,transparent)`)}
+`;
+};
+
+/* ── ACTION PLAN (sequenced graphic) ── */
+const actionPlan = () => {
+  const tracks = [
+    {n:'01', title:'Lock Foundations', window:'Week 1', c:O, owner:'All',
+     steps:['✓ Name decided — Lot 8 (Leaders Of Taste). Secure domain + all socials','Pivot every legacy doc, handle and asset over to Lot 8 branding','Confirm entertainment-first thesis + Fun/Trusted/Fast principles as the single source of truth']},
+    {n:'02', title:'Build the Shopfront', window:'Week 1–2', c:A, owner:'Josh + Ant',
+     steps:['Ship landing page + pitch deck — hard deadline end of next week; add creator + brand sign-up / intent capture','✓ IG @la.live live; refresh identity to "Watch·Chat·Buy" + Otto mascot (drop "Leaders of Taste")','Stand up Stripe ($75K free tier) + Apple/Google Pay']},
+    {n:'03', title:'Recruit the Supply Side', window:'Week 2–4', c:G, owner:'Jamie + Antonio',
+     steps:['Run IG ads requesting 30-sec pitch videos','Direct outreach to active Whatnot / IG Live sellers','Sign 5 creators across the 5 archetypes']},
+    {n:'04', title:'Land the Brands', window:'Week 2–4', c:P, owner:'Antonio + Arjun',
+     steps:['Pitch commission-only, zero-fee offer','Target Hawk High Vintage, Culture Kings, Princess Polly + local shops','Secure 5 brands willing to supply product & sales data']},
+    {n:'05', title:'Build the Overlay (v1)', window:'Week 1–6', c:'#F0A',  owner:'Arjun',
+     steps:['Frictionless commerce first: QR / pinned-link stream companion → embedded stream + product + one-click Stripe (saved customer)','Creator second screen: live earnings mid-stream. Fast-follow: Claude product Q&A from uploaded info only','Stack: Cord · Stripe · Supabase · Twilio · PostHog. Matchmaking ("the brain") moves to Phase 2, earned from this data']},
+    {n:'06', title:'Run the v1 Test', window:'Week 2–6', c:C, owner:'All',
+     steps:['5 products · 5 creators · ~1 month on YouTube (v1 target; web-scrapeable) then Twitch; IG/TikTok harder','Creators keep 100% of the 10% cut; team absorbs Stripe. "Australia only — join the waitlist" from day one','Discovery calls first (recorded, no pitch). Don\'t sandbag — clean data only. Track clicks → conversion in PostHog']},
+    {n:'07', title:'Prove It', window:'Week 6+', c:R, owner:'All',
+     steps:['Clean conversion + earnings data per creator/product — proof the overlay moves product','Package into an investor-ready story on the AU creator-monetisation wedge','Use the data to earn Phase 2 (matchmaking), then Phase 3 (platform)']},
+  ];
+  return `
+    ${tag('From Notes → Action', O)}
+    ${h2('THE PILOT, SEQUENCED')}
+    ${body('The 31 May → 14 Jun notes turned into an executable path. Per Erin\'s advice the sequence is now overlay-first: ship frictionless commerce (05), run a clean 5×5 test (06), and earn matchmaking then platform from the data. Tracks 03 and 04 feed the test.')}
+
+    <div style="position:relative;margin-top:40px">
+      ${tracks.map((t,idx)=>`
+        <div class="phase" style="margin-bottom:${idx<tracks.length-1?'28px':'0'}">
+          <div class="phase-num-col">
+            <div class="phase-circle" style="--c:${t.c}">${t.n}</div>
+            ${idx<tracks.length-1?`<div class="phase-line" style="--c:${t.c};height:auto;min-height:60px;flex:1"></div>`:''}
+          </div>
+          <div class="card" style="flex:1;border-left:3px solid ${t.c}">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+              <div><div class="phase-title">${t.title}</div><div class="phase-period" style="color:${t.c}">${t.window}</div></div>
+              <span class="tag" style="--c:${t.c}">Owner: ${t.owner}</span>
+            </div>
+            <div class="phase-items">
+              ${t.steps.map(s=>`<div class="phase-item"><span class="phase-arrow" style="color:${t.c}">→</span><span class="phase-text">${s}</span></div>`).join('')}
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    ${card(`<div style="text-align:center"><div class="flywheel-title" style="font-size:40px">$50K · 5 · 5</div>${body('Definition of done for the pilot. Everything above ladders up to this. Hit it and the orchestration-layer thesis is proven with real data — not slideware.')}</div>`, `margin-top:36px;text-align:center;background:linear-gradient(135deg,color-mix(in srgb,${O} 8%,transparent),color-mix(in srgb,${A} 5%,transparent));border-color:color-mix(in srgb,${O} 21%,transparent)`)}
+  `;
+};
+
+/* ── TASKBOARD (interactive kanban) ── */
+const SEED_TASKS = [
+  {id:'t1',  text:'✓ Decide brand name — Lot 8 (Leaders Of Taste)', col:'done', owner:'All', track:'01', c:O},
+  {id:'t2',  text:'Secure lot8 domain + all social handles', col:'todo', owner:'Josh', track:'01', c:O},
+  {id:'t3',  text:'Pivot every legacy doc / handle / asset over to Lot 8 branding', col:'todo', owner:'All', track:'01', c:O},
+  {id:'t4',  text:'Migrate work comms to Slack (channels per workstream)', col:'done', owner:'Arjun', track:'01', c:O},
+  {id:'t5',  text:'Lock Fun / Trusted / Fast as brand principles', col:'done', owner:'All', track:'01', c:O},
+  {id:'t6',  text:'Turn Lot 8 brand mockup into a live landing page + waitlist', col:'todo', owner:'Josh', track:'02', c:A},
+  {id:'t7',  text:'Stand up Lot 8 IG presence', col:'todo', owner:'Josh', track:'02', c:A},
+  {id:'t8',  text:'Lock visual identity: entertainment-young, not luxury', col:'doing', owner:'Josh', track:'02', c:A},
+  {id:'t9',  text:'Run IG ads requesting 30-sec creator pitch videos', col:'todo', owner:'Jamie', track:'03', c:G},
+  {id:'t10', text:'Outreach to active Whatnot / IG Live sellers', col:'todo', owner:'Jamie', track:'03', c:G},
+  {id:'t11', text:'Sign 5 creators across 5 archetypes', col:'todo', owner:'Jamie', track:'03', c:G},
+  {id:'t12', text:'Pitch pay-per-purchase / zero-fee offer to brands', col:'todo', owner:'Antonio', track:'04', c:P},
+  {id:'t13', text:'Approach Hawk High Vintage, Culture Kings, Princess Polly', col:'todo', owner:'Antonio', track:'04', c:P},
+  {id:'t14', text:'Secure 5 brands supplying product + sales data', col:'todo', owner:'Antonio', track:'04', c:P},
+  {id:'t15', text:'Build "the brain": creator ⇆ brand ⇆ category matching logic', col:'todo', owner:'Antonio', track:'05', c:'#F0A'},
+  {id:'t16', text:'Design event-curation + traffic-driving flow to existing rails', col:'todo', owner:'Antonio', track:'05', c:'#F0A'},
+  {id:'t17', text:'Structure communities as interest groups', col:'todo', owner:'All', track:'05', c:'#F0A'},
+  {id:'t18', text:'Spec creator sponsorship / donation model (Twitch/TikTok-style)', col:'todo', owner:'Jamie', track:'05', c:'#F0A'},
+  {id:'t19', text:'Run streams on eBay Live / IG Live / Shopify', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t20', text:'Capture GMV, conversion & engagement; log friction points', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t21', text:'Test marketplace-vs-social positioning over the 3-month trial', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t22', text:'Decide: on-platform vs off-platform community (test both)', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t23', text:'Reconcile pitch deck with Lot 8 + entertainment-first thesis', col:'doing', owner:'Arjun', track:'00', c:R},
+  {id:'t24', text:'Package "555" results into investor proof point', col:'todo', owner:'All', track:'07', c:R},
+  {id:'t25', text:'✓ Brand architecture decided: single Lot 8 brand (app + brain unified)', col:'done', owner:'All', track:'00', c:R},
+  {id:'t26', text:'✓ IG handle @la.live established', col:'done', owner:'Josh', track:'02', c:A},
+  {id:'t27', text:'Ship landing page + pitch deck — hard deadline end of next week', col:'doing', owner:'Josh', track:'02', c:A},
+  {id:'t28', text:'Refresh brand mockup: drop "Leaders of Taste" → "Watch·Chat·Buy" + eyes mascot', col:'todo', owner:'Josh', track:'02', c:A},
+  {id:'t29', text:'Design the eyes-mascot (8→eyes) with animation states', col:'todo', owner:'Jamie', track:'02', c:A},
+  {id:'t30', text:'Define brand partnership model in-product (retail default; discounts need approval; gold badge)', col:'todo', owner:'Jamie', track:'05', c:'#F0A'},
+  {id:'t31', text:'Stand up Stripe ($75K free tier) + Apple/Google Pay', col:'todo', owner:'Antonio', track:'02', c:A},
+  {id:'t32', text:'Build creator/brand tracking spreadsheets (all populate)', col:'todo', owner:'All', track:'03', c:G},
+  {id:'t33', text:'Build creator shortlist across sports/tech/gaming/luxury — by EOW', col:'todo', owner:'Jamie', track:'03', c:G},
+  {id:'t34', text:'Recruit a creator liaison for stream management', col:'todo', owner:'Antonio', track:'03', c:G},
+  {id:'t35', text:'Follow up leads: Snap Cash founder, 250K-TikTok colleague, TCG store', col:'todo', owner:'All', track:'03', c:G},
+  {id:'t36', text:'Lock pilot schedule: 10 IG Live + 2 Whatnot + 1 eBay, start Week 3', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t37', text:'Define manual flow + attribution: DM purchase links during streams', col:'todo', owner:'Antonio', track:'06', c:C},
+  {id:'t38', text:'Reconcile take rate (2–3% platform) with deck financials (5–8%)', col:'todo', owner:'Arjun', track:'00', c:R},
+  {id:'t39', text:'Design "Otto" mascot — two-O eyes (sideways-8/infinity), states, in-chat persona', col:'todo', owner:'Jamie', track:'02', c:A},
+  {id:'t40', text:'Write Otto chat voice + message types (time warnings, item alerts, drop reminders)', col:'todo', owner:'Jamie', track:'02', c:A},
+  {id:'t41', text:'Rework visual direction: dark + fluoro-yellow, red/orange energy, more punch/contrast', col:'todo', owner:'Josh', track:'02', c:A},
+  {id:'t42', text:'Define 3-side colour coding (watchers / creators / brands)', col:'todo', owner:'Josh', track:'02', c:A},
+  {id:'t43', text:'Interview Bon Emil (Jaime\'s contact) — sales approach, partnership appetite, success metrics + data', col:'doing', owner:'Jamie', track:'04', c:P},
+  {id:'t44', text:'Build landing page for Instagram-comment purchases', col:'todo', owner:'Josh', track:'06', c:C},
+  {id:'t45', text:'Cold-email auctioneers for auctioneer + young-creator co-streams', col:'todo', owner:'Jamie', track:'03', c:G},
+  {id:'t46', text:'Build dream-brand vision board (legacy 50+ yrs / 50+ countries targets)', col:'todo', owner:'All', track:'04', c:P},
+  {id:'t47', text:'Define post-stream brand touchpoints for fulfilment tracking', col:'todo', owner:'Antonio', track:'06', c:C},
+  {id:'t48', text:'Test plan: direct sales vs gamified entertainment formats', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t49', text:'Build the overlay widget: QR/pinned link → embedded stream + product + one-click Stripe (saved customer)', col:'doing', owner:'Arjun', track:'05', c:'#F0A'},
+  {id:'t50', text:'Overlay: creator live-earnings second screen (mid-stream)', col:'todo', owner:'Arjun', track:'05', c:'#F0A'},
+  {id:'t51', text:'Stand up v1 stack: Cord · Stripe · Supabase · Twilio · PostHog', col:'todo', owner:'Arjun', track:'05', c:'#F0A'},
+  {id:'t52', text:'Register "Lot 8" as a business entity (IG verification + outreach credibility)', col:'todo', owner:'Josh', track:'01', c:O},
+  {id:'t53', text:'Deploy shared command center (this dashboard) with Granola auto-sync', col:'doing', owner:'Arjun', track:'02', c:A},
+  {id:'t54', text:'Find 5 live-streaming creators for discovery calls (recorded, no pitch)', col:'doing', owner:'Antonio', track:'03', c:G},
+  {id:'t55', text:'Ask Erin (YungDaenerys) for live-streamer intros; chase Sarah\'s contacts', col:'todo', owner:'Jamie', track:'03', c:G},
+  {id:'t56', text:'Book the Bon Emil conversation (high-ticket test brand; via Jaime)', col:'todo', owner:'Jamie', track:'04', c:P},
+  {id:'t57', text:'Source a beauty brand (Sarah) + a fashion/athleisure brand for the 5-product test', col:'todo', owner:'Jamie', track:'04', c:P},
+  {id:'t58', text:'Per-creator pre-stream pack: stock/size sheet + product info doc (Claude source)', col:'todo', owner:'All', track:'06', c:C},
+  {id:'t59', text:'Add "Australia only — join the waitlist" capture for international viewers', col:'todo', owner:'Josh', track:'06', c:C},
+  {id:'t60', text:'Confirm Twitch/YouTube multi-streaming legality before recruiting', col:'todo', owner:'Antonio', track:'05', c:'#F0A'},
+  {id:'t61', text:'Pull together a summary of all Granola insights to date', col:'todo', owner:'All', track:'00', c:R},
+  {id:'t62', text:'Activate "builder mode": each founder owns one shippable slice; lock v1 scope + a hard ship date', col:'doing', owner:'All', track:'00', c:R},
+  {id:'t63', text:'Code the overlay back-end until it runs (stream → link → checkout)', col:'doing', owner:'Arjun', track:'05', c:'#F0A'},
+  {id:'t64', text:'Map the end-to-end overlay process (stream → link → where it goes → embed)', col:'todo', owner:'Arjun', track:'05', c:'#F0A'},
+  {id:'t65', text:'Ship the landing page WITH the pitch (the "landing bed")', col:'doing', owner:'Josh', track:'02', c:A},
+  {id:'t66', text:'Add creator + brand sign-up / intent capture to the landing page', col:'todo', owner:'Josh', track:'06', c:C},
+  {id:'t67', text:'Warm brand outreach — coffee chats on "e-commerce opportunities now"', col:'todo', owner:'Jamie', track:'04', c:P},
+  {id:'t68', text:'Evaluate interns / uni CS students for build capacity (fence to front-end)', col:'todo', owner:'Arjun', track:'00', c:R},
+  {id:'t69', text:'Confirm YouTube embed approach for v1; assess IG/Twitch APIs (TikTok blocked)', col:'todo', owner:'Antonio', track:'05', c:'#F0A'},
+  {id:'t70', text:'Scope the ~$120–150K F&F SAFE — define entity + use of funds', col:'todo', owner:'Arjun', track:'00', c:R},
+];
+
+const COLS = [
+  {key:'todo',  label:'To Do',       c:'#888'},
+  {key:'doing', label:'In Progress', c:A},
+  {key:'done',  label:'Done',        c:G},
+];
+
+const OWNERS = ['All','Arjun','Josh','Jamie','Antonio'];
+
+let TASKS = [];
+let boardFilter = 'All';
+
+function loadTasks() {
+  let stored = null, applied = [];
+  try { const r = localStorage.getItem('revelry-tasks-v2'); if (r) stored = JSON.parse(r); } catch (e) {}
+  try { const a = localStorage.getItem('revelry-seed-applied'); if (a) applied = JSON.parse(a); } catch (e) {}
+
+  if (!stored) {
+    TASKS = SEED_TASKS.slice();
+    applied = SEED_TASKS.map(t => t.id);
+  } else {
+    TASKS = stored;
+    const have = new Set(stored.map(t => t.id));
+    const app = new Set(applied);
+    SEED_TASKS.forEach(s => { if (!have.has(s.id) && !app.has(s.id)) { TASKS.push(s); app.add(s.id); } });
+    applied = [...app];
+  }
+  try { localStorage.setItem('revelry-seed-applied', JSON.stringify(applied)); } catch (e) {}
+  saveTasks();
+}
+function saveTasks() {
+  try { localStorage.setItem('revelry-tasks-v2', JSON.stringify(TASKS)); } catch (e) {}
+}
+
+const taskboard = () => `
+  ${tag('Live Workstation', G)}
+  ${h2('TASKBOARD')}
+  ${body('Drag cards between columns, or use the arrows. Add your own tasks. State is shared across the team and persists between sessions. Filter by owner to see just your lane.')}
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:24px 0 8px">
+    <span style="color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-right:4px">Filter</span>
+    ${OWNERS.map(o=>`<button class="tb-filter" data-owner="${o}" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted)">${o}</button>`).join('')}
+    <div style="flex:1"></div>
+    <button id="tb-add" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:color-mix(in srgb,${O} 13%,transparent);border:1px solid color-mix(in srgb,${O} 30%,transparent);color:${O}">+ Add task</button>
+    <button id="tb-reset" style="padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted)">Reset</button>
+  </div>
+
+  <div id="tb-progress-wrap" style="margin:12px 0 24px"></div>
+  <div class="tb-board" id="tb-board"></div>
+`;
+
+function renderBoard() {
+  const board = document.getElementById('tb-board');
+  if (!board) return;
+  const visible = TASKS.filter(t => boardFilter==='All' || t.owner===boardFilter || (boardFilter!=='All' && t.owner==='All'));
+
+  board.innerHTML = COLS.map(col => {
+    const cards = visible.filter(t => t.col===col.key);
+    return `
+      <div class="tb-col" data-col="${col.key}" ondragover="event.preventDefault();this.classList.add('tb-col-over')" ondragleave="this.classList.remove('tb-col-over')" ondrop="tbDrop(event,'${col.key}')">
+        <div class="tb-col-head">
+          <span style="display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:${col.c}"></span><span style="color:var(--light);font-weight:700;font-size:13px;letter-spacing:.04em">${col.label}</span></span>
+          <span style="color:var(--muted);font-size:12px;font-weight:600">${cards.length}</span>
+        </div>
+        <div class="tb-col-body">
+          ${cards.length? cards.map(t=>tbCard(t)).join('') : `<div class="tb-empty">Drop here</div>`}
+        </div>
+      </div>`;
+  }).join('');
+  renderProgress();
+}
+
+function tbCard(t) {
+  const colIdx = COLS.findIndex(c=>c.key===t.col);
+  const prevK = colIdx>0 ? COLS[colIdx-1].key : null;
+  const nextK = colIdx<COLS.length-1 ? COLS[colIdx+1].key : null;
+  return `
+    <div class="tb-card" draggable="true" ondragstart="tbDrag(event,'${t.id}')" style="border-left:3px solid ${t.c||'#888'}">
+      <div style="color:var(--light);font-size:13px;line-height:1.5;margin-bottom:10px">${t.text}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span style="font-size:10px;color:var(--muted);background:color-mix(in srgb,${t.c||'#888'} 12%,transparent);border:1px solid color-mix(in srgb,${t.c||'#888'} 25%,transparent);padding:2px 8px;border-radius:4px;font-weight:600">${t.owner}${t.track&&t.track!=='00'?` · T${t.track}`:''}</span>
+        <span style="display:flex;gap:4px">
+          ${prevK?`<button onclick="tbMove('${t.id}','${prevK}')" class="tb-move">←</button>`:''}
+          ${nextK?`<button onclick="tbMove('${t.id}','${nextK}')" class="tb-move">→</button>`:''}
+          <button onclick="tbDelete('${t.id}')" class="tb-move" style="color:${R}">✕</button>
+        </span>
+      </div>
+    </div>`;
+}
+
+function renderProgress() {
+  const wrap = document.getElementById('tb-progress-wrap');
+  if (!wrap) return;
+  const total = TASKS.length;
+  const done = TASKS.filter(t=>t.col==='done').length;
+  const doing = TASKS.filter(t=>t.col==='doing').length;
+  const pct = total? Math.round(done/total*100) : 0;
+  wrap.innerHTML = `
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase">Pilot progress</span><span style="color:${G};font-size:12px;font-weight:700">${done}/${total} done · ${doing} in progress · ${pct}%</span></div>
+    <div style="height:8px;background:var(--border);border-radius:99px;overflow:hidden"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,${A},${G});transition:width .3s;border-radius:99px"></div></div>`;
+}
+
+function tbMove(id, col) { const t=TASKS.find(x=>x.id===id); if(t){t.col=col; saveTasks(); renderBoard();} }
+function tbDelete(id) { TASKS=TASKS.filter(x=>x.id!==id); saveTasks(); renderBoard(); }
+let _drag=null;
+function tbDrag(e,id){ _drag=id; e.dataTransfer.effectAllowed='move'; }
+function tbDrop(e,col){ e.preventDefault(); const c=document.querySelector('.tb-col-over'); if(c)c.classList.remove('tb-col-over'); if(_drag){tbMove(_drag,col); _drag=null;} }
+
+function bindBoard() {
+  const addBtn=document.getElementById('tb-add');
+  if(addBtn) addBtn.onclick=()=>{
+    const text=prompt('New task:'); if(!text) return;
+    const owner=prompt('Owner (All / Arjun / Josh / Jamie / Antonio):','All')||'All';
+    TASKS.unshift({id:'t'+Date.now(), text, col:'todo', owner, track:'', c:O});
+    saveTasks(); renderBoard();
+  };
+  const resetBtn=document.getElementById('tb-reset');
+  if(resetBtn) resetBtn.onclick=()=>{ if(confirm('Reset board to the original pilot tasks? This clears any custom tasks.')){ TASKS=SEED_TASKS.slice(); saveTasks(); renderBoard(); } };
+  document.querySelectorAll('.tb-filter').forEach(b=>{
+    b.onclick=()=>{ boardFilter=b.dataset.owner; document.querySelectorAll('.tb-filter').forEach(x=>{x.style.background='transparent';x.style.color='var(--muted)';x.style.borderColor='var(--border)';}); b.style.background=`color-mix(in srgb,${G} 13%,transparent)`; b.style.color=G; b.style.borderColor=`color-mix(in srgb,${G} 30%,transparent)`; renderBoard(); };
+  });
+  renderBoard();
+}
+
+/* ── VISION ── */
+const vision = () => `
+  ${tag('The Big Picture')}
+  <div class="mt-20 mb-8">
+    <div class="hero-text">ENTERTAINMENT<br>IS THE NEW<br><span class="orange">STOREFRONT.</span></div>
+  </div>
+  ${body(`Lot 8 is the live commerce platform where buying, selling, and entertaining converge.
+    We're building the world's most engaging commerce experience — where creators spruik products
+    they believe in, brands reach audiences who actually buy, and buyers discover things worth
+    owning through people they trust.`)}
+
+  <div class="stat-grid mt-40 mb-40">
+    ${[['$500B+','Live Commerce GMV','Global by 2027'],['37%','US CAGR','Fastest-growing retail format'],['30×','Higher Conversion','vs static eCommerce'],['Day 1','Australia-First','Zero dominant player']]
+      .map(([v,l,s]) => `<div class="stat-cell">${metric(v,l,s)}</div>`).join('')}
+  </div>
+
+  <div class="grid-2 mb-40">
+    ${card(`<div class="mv-icon" style="color:${O}">🎯</div><div class="mv-title">Mission</div>${body('Make buying as entertaining as watching — and selling as effortless as talking. We exist to give every creator a stage, every brand a genuine audience, and every buyer an experience worth coming back for.')}`)}
+    ${card(`<div class="mv-icon" style="color:${A}">🔭</div><div class="mv-title">Vision</div>${body('The category-defining live commerce platform for the English-speaking world — starting in Australia, scaling to UK, NZ, and Southeast Asia. The Whatnot + TikTok Shop + Shopify rolled into one, with AI as the operating system.')}`)}
+  </div>
+
+  ${card(`<div class="why-title">Why "Lot 8"?</div>${body(`<strong style="color:var(--light)">Lot 8</strong> — short, ownable, and easy to say. The positioning is <strong style="color:var(--light)">"Entertainment is the future storefront"</strong> and the tagline is <strong style="color:var(--light)">"Watch · Chat · Buy."</strong>
+    The <strong style="color:var(--light)">8</strong> carries luck and fortune across Asian markets, turns on its side into <strong style="color:var(--light)">infinity</strong>, and becomes <strong style="color:var(--light)">Otto</strong> — a mascot whose two O's are eyes, for the AI that watches and matches creators to products ("octo" + "auto"). Otto also speaks in chat: time warnings, item alerts, drop reminders.
+    (The original "Leaders of Taste" reading has been retired as the public positioning.)`)}`, 'background:linear-gradient(135deg,color-mix(in srgb,#FF5C00 6%,transparent),color-mix(in srgb,#FFB800 5%,transparent));border-color:color-mix(in srgb,#FF5C00 19%,transparent)')}
+`;
+
+/* ── PLATFORM ── */
+const platform = () => `
+  ${tag('Three-Sided Platform')}
+  ${h2('THE LOT 8 ECOSYSTEM')}
+  ${body('Lot 8 is a three-sided marketplace where each side creates compounding value for the others. More creators attract more buyers. More buyers attract more brands. More brands attract more creators. The flywheel accelerates with every transaction.')}
+
+  <div class="flywheel-container">
+    <div class="flywheel-title">THE FLYWHEEL</div>
+    <div class="flywheel-grid">
+      ${[{label:'Creators',sub:'Stream & Sell',emoji:'🎙️',c:O},{label:'→',sub:'',emoji:'',c:'#666'},{label:'Buyers',sub:'Watch & Buy',emoji:'👥',c:G},{label:'→',sub:'',emoji:'',c:'#666'},{label:'Brands',sub:'Reach & Convert',emoji:'🏷️',c:A},{label:'→',sub:'',emoji:'',c:'#666'},{label:'Creators',sub:'Earn More',emoji:'🎙️',c:O}].map(item=>
+        item.emoji
+          ? `<div class="fw-item"><div class="fw-circle" style="--c:${item.c}">${item.emoji}</div><div class="fw-label" style="color:${item.c}">${item.label}</div><div class="fw-sub">${item.sub}</div></div>`
+          : `<div class="fw-item"><div class="fw-arrow" style="color:${item.c}">${item.label}</div></div>`
+      ).join('')}
+    </div>
+  </div>
+
+  <div class="grid-3">
+    ${[
+      {emoji:'🎙️',title:'Creators',c:O,stats:[{l:'Avg Whatnot seller earns',v:'100-250× more streaming daily vs monthly'},{l:'1 in 8 Whatnot sellers',v:'Now full-time'},{l:'AU live creators',v:'~5,000 active today; 50,000+ potential'}]},
+      {emoji:'👥',title:'Buyers',c:G,stats:[{l:'Live commerce conversion',v:'9-30% vs 2-3% static'},{l:'Return rate',v:'40% lower than standard eCommerce'},{l:'Avg session duration',v:'95 min/day on Whatnot'}]},
+      {emoji:'🏷️',title:'Brands',c:A,stats:[{l:'Trust in creator recommendations',v:'71% vs online reviews'},{l:'Brand activation budget (AU)',v:'$800M-$1.5B/year underdeployed'},{l:'Performance vs display advertising',v:'Pay on results, not impressions'}]},
+    ].map(g=>`
+      <div class="card creator-card" style="--c:${g.c}">
+        <div class="creator-card-emoji">${g.emoji}</div>
+        <div class="creator-card-title" style="color:${g.c}">${g.title}</div>
+        ${g.stats.map((s,j)=>`<div class="creator-stat" style="${j<2?'border-bottom:1px solid var(--border)':''}"><div class="creator-stat-label">${s.l}</div><div class="creator-stat-value">${s.v}</div></div>`).join('')}
+      </div>`).join('')}
+  </div>
+`;
+
+/* ── VALUE PROPS ── */
+const audienceCard = (emoji,title,subtitle,props,c) => `
+  <div class="card audience-card" style="--c:${c}">
+    <div class="aud-emoji">${emoji}</div>
+    <div class="aud-title">${title}</div>
+    <div class="aud-sub">${subtitle}</div>
+    <div class="prop-list">
+      ${props.map(p=>`<div class="prop-item"><div class="prop-dot"><div class="prop-dot-inner" style="background:${c}"></div></div><div class="prop-text">${p}</div></div>`).join('')}
+    </div>
+  </div>`;
+
+const valueProps = () => `
+  ${tag('Core Value Propositions')}
+  ${h2('WHY EACH SIDE CHOOSES LOT 8')}
+  ${body('A three-sided platform wins only when each side has a standalone, undeniable reason to be here. These are not features. These are promises that must be kept from Day 1.')}
+
+  <div class="flex-col mt-32">
+    ${audienceCard('🎙️','For Creators','Turn your audience into a business — not a side hustle',[
+      'Earn commission on every sale — not AdSense pennies. Top Lot 8 creators earn $30-150K+ per month.',
+      'AI-powered coaching tells you exactly what to say, when to pin a product, and which items your specific audience buys. Data-driven instincts, not guesswork.',
+      'Brand-matching engine surfaces products your audience already wants — no cold-pitching brands, no chasing DMs.',
+      'Multi-platform streaming: go live on Lot 8, Whatnot, TikTok, and Instagram simultaneously from one interface.',
+      'Your data, your audience. Unlike TikTok, you own your buyer list and can contact them directly.',
+      'Creator verification badge gives you credibility that converts — brands pay more for Lot 8 Verified creators.',
+    ],O)}
+    ${audienceCard('👥','For Buyers','Shopping that\'s actually worth watching',[
+      'An entertainment feed that doubles as a shop — AI builds your personal live commerce channel based on what you watch, buy, and love.',
+      'Real humans, real products, real opinions. No staged photoshoots — watch a creator use the product live, ask questions, and see it in the real world.',
+      'Exclusive live drops: products, prices, and bundles only available during a stream. The scarcity is real.',
+      'One-tap checkout during any live stream — product is in your cart before the host finishes the sentence.',
+      'Community ratings built on actual purchases — the \'Lot 8 Score\' tells you which creators genuinely know their products.',
+      'Loyalty rewards: watching, engaging, and buying earns Lot 8 Points redeemable for early access and exclusive drops.',
+    ],G)}
+    ${audienceCard('🏷️','For Brands','The highest-converting channel in retail. Finally, at your scale.',[
+      'Pay on performance: commission-based model means you pay only when product sells. No CPM. No impression buying. No waste.',
+      'AI-matched creator selection: our matching engine analyses your product, target customer, and budget against every creator\'s audience data to find the highest-probability conversion match.',
+      'Real-time campaign dashboard: see units sold, GMV, viewer engagement, and creator performance updated minute-by-minute during every live stream.',
+      'Inventory integration: list your products once and they\'re available to all matching creators instantly — no individual product briefings required.',
+      'Access to the Lot 8 Verified creator network: 500+ pre-vetted Australian creators with verified audience data and proven sales history.',
+      'Post-stream analytics: full funnel data from viewer to buyer, including which specific stream moments drove purchase decisions.',
+    ],A)}
+  </div>
+
+  <div class="mt-32">
+    ${card(`<div class="trust-title">The Lot 8 Score — Our Trust Layer</div>${body(`Every creator on Lot 8 carries a publicly visible <strong style="color:${O}">Lot 8 Score</strong> — an AI-computed trust and performance rating that aggregates: conversion rate history, audience authenticity, brand satisfaction, content consistency, and return rate on sold products. For buyers, it answers "can I trust this creator's recommendation?" For brands, it answers "will this creator convert my product?" For creators, it is the reputation that unlocks higher-value brand deals.`)}
+      <div class="grid-5 grid-5-score">
+        ${[['Conversion Rate','30%'],['Audience Auth','20%'],['Brand Rating','20%'],['Consistency','15%'],['Return Rate','15%']].map(([l,w])=>`<div><div class="score-weight">${w}</div><div class="score-label">${l}</div></div>`).join('')}
+      </div>`,'background:linear-gradient(135deg,color-mix(in srgb,#FF5C00 5%,transparent),color-mix(in srgb,#FFB800 3%,transparent));border-color:color-mix(in srgb,#FF5C00 15%,transparent)')}
+  </div>
+`;
+
+/* ── AI CORE ── */
+const aiFeature = (icon,title,tagText,desc) => `
+  ${card(`<div class="ai-feature"><div class="ai-icon">${icon}</div><div><div class="ai-title-row"><div class="ai-title">${title}</div>${tag(tagText,A)}</div><div class="ai-desc">${desc}</div></div></div>`)}`;
+
+const aiCore = () => `
+  ${tag('AI-First Architecture')}
+  ${h2('AI IS THE PRODUCT, NOT A FEATURE')}
+  ${body('Every major platform decision — what creators see, what brands get matched, what buyers discover — is AI-driven. We do not bolt AI onto a human-operated platform. AI is the operating system. Human judgment is the override, not the default.')}
+
+  <div class="flex-col-16 mt-32">
+    ${aiFeature('🎯','Creator-Brand Matching Engine','Day 1','Analyses a creator\'s audience demographics, purchase history, content categories, and engagement patterns against a brand\'s target customer profile to compute a compatibility score. A fitness creator with an audience of 28-35 year old women gets matched to activewear brands automatically — no manual briefing required on either side. Powered by Claude.')}
+    ${aiFeature('🔴','Live Stream Coaching AI','Day 1','Real-time AI overlay during live streams that tells creators: when to pin a product (engagement spike detected), which product to feature next (based on live audience signals), what price anchor to use, and when to trigger scarcity mechanics. It is like having a performance coach in your ear who has watched 10 million streams. Delivered as a co-pilot sidebar during the live session.')}
+    ${aiFeature('🎬','Buyer Entertainment Feed','Day 1','Pure algorithmic discovery — no following required. The buyer feed is built entirely on what you watch, how long you watch, what you click, what you buy, and what you return. Like TikTok\'s For You Page, but every video ends in a purchase opportunity. Cold-start solved through category onboarding (choose three interests) on first open.')}
+    ${aiFeature('✂️','Auto-Clip & Shoppable Moments','Phase 2','Every live stream is continuously analysed for high-engagement moments. AI automatically extracts 15-60 second clips of peak engagement, attaches the relevant product and buy button, and distributes them as shoppable short-form content across Lot 8\'s discovery feed and optionally to the creator\'s TikTok, Instagram, and YouTube. One live stream becomes 20+ pieces of evergreen shoppable content.')}
+    ${aiFeature('📊','Predictive GMV Engine','Phase 2','Before a stream begins, AI predicts the likely GMV range based on: creator\'s Lot 8 Score, selected products, scheduled time slot, current platform demand signals, and comparable historical streams. Brands use this for campaign planning. Creators use it to make product selection decisions. Platform uses it for demand forecasting and fulfilment preparation.')}
+    ${aiFeature('💬','AI Product Brief Generator','Day 1','When a brand lists a product, AI immediately generates a creator-ready selling brief: the elevator pitch, three key selling points, objection handlers, urgency language, best demo approach, and optimal stream placement (opener vs. closer). Creators receive this before every stream featuring a new product. Eliminates the brand-creator briefing call entirely.')}
+    ${aiFeature('🏷️','Dynamic Pricing Intelligence','Phase 2','Analyses real-time supply, demand, viewer count, time remaining in stream, and competitor pricing to recommend live pricing adjustments. Not automated price changes — recommended actions the creator can accept in one tap. \'Your viewer count just hit 500 — we recommend pinning the bundle at $89 for the next 8 minutes.\' Turns pricing from intuition into data.')}
+    ${aiFeature('📦','Fulfilment Demand Forecasting','Phase 2','Predicts order burst volume for each scheduled stream, enabling brands and fulfilment partners to pre-position inventory and staffing. Eliminates the core operational failure of live commerce: orders placed during a stream that cannot be dispatched for 3+ days because the warehouse wasn\'t prepared for surge demand.')}
+  </div>
+
+  ${card(`<div style="color:var(--light);font-weight:700;margin-bottom:12px">Claude as the Intelligence Layer</div>${body('All AI features are built on Anthropic\'s Claude API. Claude\'s reasoning capability — not pattern matching — is what enables genuine creator coaching ("your conversion dropped 40% when you switched to the skincare range — your audience indexes 85% toward fashion"), not generic advice. Claude\'s long context window handles a creator\'s full stream history, product catalogue, and audience data simultaneously to generate specific, contextual recommendations. The Claude integration is described in detail in the technical architecture document.')}`, `margin-top:32px;border-color:color-mix(in srgb,${O} 19%,transparent)`)}
+`;
+
+/* ── BUSINESS MODEL ── */
+const businessModel = () => {
+  const models = [
+    {title:'GMV Commission',icon:'💸',c:O,primary:'5-8% of facilitated sales',tag:'Primary',desc:'The primary revenue engine. Applied to all transactions completed through the Lot 8 platform regardless of which streaming platform the sale originated from. Scales linearly with GMV. At $100M GMV: $5-8M revenue.'},
+    {title:'Brand Subscriptions',icon:'🏷️',c:A,primary:'$299-$999/month',tag:'Recurring',desc:'Monthly subscription for brands to access the creator network, AI matching, campaign dashboard, and product analytics. Tiered by number of active creator partnerships and feature depth. 200 brands at $600 avg = $1.44M ARR.'},
+    {title:'Creator Premium',icon:'🎙️',c:G,primary:'$49-$149/month',tag:'Recurring',desc:'Premium creator membership unlocking: AI coaching suite, advanced analytics, multi-platform simulcasting, priority brand matching, and the Lot 8 Verified badge. Free tier exists for discovery. 2,000 creators at $90 avg = $2.16M ARR.'},
+    {title:'Promoted Placement',icon:'📣',c:P,primary:'CPC/CPM from brands',tag:'Year 2+',desc:'Brands can pay for promoted placement in the buyer discovery feed and brand-matching results. Operates as native sponsorship — disclosed but contextually relevant. Unlocks at meaningful buyer scale (Year 2+). Projected $1-2M ARR by Year 3.'},
+    {title:'Fulfilment Services',icon:'📦',c:R,primary:'$4-8 per order + carrier',tag:'Optional',desc:'Opt-in managed fulfilment for sellers who want Lot 8 to handle pick-pack-dispatch. Not the primary model — offered as a convenience service for high-volume creators without logistics infrastructure. Generates ancillary revenue at 20-25% margin.'},
+    {title:'Data Intelligence',icon:'📊',c:C,primary:'$5,000-$50,000/year',tag:'Year 3+',desc:'Anonymised, aggregated live commerce market intelligence sold to brands for category benchmarking, and to market research firms. Lot 8 will be the most comprehensive source of Australian live commerce behavioural data in existence. Year 3+ revenue stream.'},
+  ];
+  return `
+    ${tag('How We Make Money')}
+    ${h2('THE BUSINESS MODEL')}
+    ${body('Lot 8 generates revenue from three sides of the marketplace simultaneously. The model is designed so that revenue scales directly with platform activity — we win when our users win.')}
+
+    <div class="grid-2 mt-32">
+      ${models.map(m=>`
+        <div class="card biz-card" style="--c:${m.c}">
+          <div class="biz-head"><div class="biz-icon">${m.icon}</div>${tag(m.tag,m.c)}</div>
+          <div class="biz-title">${m.title}</div>
+          <div class="biz-primary" style="color:${m.c}">${m.primary}</div>
+          <div class="body" style="font-size:12px">${m.desc}</div>
+        </div>`).join('')}
+    </div>
+
+    ${h3('Unit Economics at Steady State')}
+    <div class="grid-4 mt-16">
+      ${[['72%','Blended Gross Margin','At 1,000 active creators'],['$4,800','Avg Brand Annual Value','$400 MRR × 12'],['$1,080','Avg Creator Annual Value','$90 MRR × 12'],['8-15×','Revenue Multiple','Marketplace SaaS hybrid']].map(([v,l,s])=>`<div>${metric(v,l,s)}</div>`).join('')}
+    </div>
+  `;
+};
+
+/* ── FINANCIALS ── */
+const financials = () => {
+  const rows = [
+    {s:'GMV Commission',m:'5-8% on facilitated sales',y1:'$180K',y2:'$900K',y3:'$3.2M',mg:'90%'},
+    {s:'Brand Subscriptions',m:'$299-999/mo per brand',y1:'$216K',y2:'$720K',y3:'$2.16M',mg:'82%'},
+    {s:'Creator Premium',m:'$49-149/mo per creator',y1:'$108K',y2:'$540K',y3:'$2.16M',mg:'80%'},
+    {s:'Promoted Placement',m:'CPC/CPM from brands',y1:'—',y2:'$120K',y3:'$800K',mg:'85%'},
+    {s:'Fulfilment Services',m:'$4-8/order (opt-in)',y1:'$30K',y2:'$120K',y3:'$400K',mg:'22%'},
+    {s:'Data Intelligence',m:'$5-50K/year contracts',y1:'—',y2:'—',y3:'$300K',mg:'90%'},
+  ];
+  return `
+    ${tag('Financial Projections')}
+    ${h2('THE NUMBERS')}
+    ${body('Conservative projections grounded in comparable platform benchmarks. Whatnot\'s trajectory, CommentSold\'s ARR, and Australia\'s live commerce adoption data are the primary calibration references.')}
+
+    <div class="table-wrap mt-32">
+      <table>
+        <thead><tr>
+          <th>Revenue Stream</th><th>Model</th>
+          <th class="right">Year 1</th><th class="right">Year 2</th>
+          <th class="right" style="color:var(--amber)">Year 3</th>
+          <th class="right">Margin</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(r=>`<tr>
+            <td style="color:var(--light);font-weight:600;font-size:13px">${r.s}</td>
+            <td style="color:var(--muted);font-size:12px">${r.m}</td>
+            <td style="color:#CCC;font-size:13px;text-align:right">${r.y1}</td>
+            <td style="color:#CCC;font-size:13px;text-align:right">${r.y2}</td>
+            <td style="color:var(--amber);font-size:13px;font-weight:700;text-align:right">${r.y3}</td>
+            <td style="text-align:right"><span style="color:var(--orange);font-size:12px;font-weight:700">${r.mg}</span></td>
+          </tr>`).join('')}
+          <tr style="background:color-mix(in srgb,var(--orange) 5%,transparent);border-top:2px solid color-mix(in srgb,var(--orange) 19%,transparent)">
+            <td style="color:var(--light);font-size:14px;font-weight:800">TOTAL ARR</td>
+            <td></td>
+            <td style="color:var(--light);font-size:14px;font-weight:800;text-align:right">$534K</td>
+            <td style="color:var(--light);font-size:14px;font-weight:800;text-align:right">$2.4M</td>
+            <td style="color:var(--amber);font-size:16px;font-weight:800;text-align:right">$9.02M</td>
+            <td style="color:var(--orange);font-size:13px;font-weight:700;text-align:right">72% blended</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2 mt-32">
+      ${card(`<div style="color:var(--light);font-weight:700;margin-bottom:16px">Operating Assumptions</div>
+        ${[['Year 1 brands','60 active (founding tier)'],['Year 1 creators','200 active paying'],['Year 1 GMV','$3M facilitated'],['Year 2 brands','200 active'],['Year 2 creators','1,000 active paying'],['Year 2 GMV','$15M facilitated'],['Year 3 brands','400 active'],['Year 3 creators','4,000 active paying'],['Year 3 GMV','$50M+ facilitated']].map(([k,v])=>`<div class="assump-row"><span class="assump-key">${k}</span><span class="assump-val">${v}</span></div>`).join('')}`)}
+      ${card(`<div style="color:var(--light);font-weight:700;margin-bottom:16px">Burn &amp; Breakeven</div>
+        ${[['Monthly burn (Year 1)','$60-80K'],['Monthly burn (Year 2)','$120-160K'],['Breakeven MRR target','$95K'],['Breakeven timeline','Month 20-24'],['Seed round size','$750K'],['Series A trigger','$2M ARR'],['Series A size (est.)','$5-8M'],['Series A timeline','Month 18-24'],['Exit target (Year 5)','$80-150M valuation']].map(([k,v],i)=>`<div class="assump-row"><span class="assump-key">${k}</span><span class="assump-val" style="${i===8?'color:var(--amber)':''}">${v}</span></div>`).join('')}`)}
+    </div>
+  `;
+};
+
+/* ── GO-TO-MARKET ── */
+const gtm = () => `
+  ${tag('Go-to-Market')}
+  ${h2('HOW WE WIN MARKET BY MARKET')}
+  ${body('We do not launch everywhere. We launch in one category, in one city, with an intensity that creates genuine density before expanding. Category density before geographic density. Geographic density before global expansion.')}
+
+  ${h3('Phase 0: The Founding Category — Fitness &amp; Activewear (Month 1-3)')}
+  <div class="card phase0-card">
+    ${body('<strong style="color:var(--light)">Why fitness/activewear:</strong> Jamie\'s personal training network provides immediate access to both sides of the market — fitness brands wanting to reach active Australians, and PT/fitness creators with existing audiences. It is the highest-affinity category for the founding team and the one where product demonstration in a live stream creates the most obvious value (showing how activewear fits and moves is dramatically better than a static product photo).')}
+    <div class="phase0-grid">
+      ${[
+        {title:'Supply',items:['10 Australian activewear/fitness brands recruited via Jamie\'s network','Products on consignment — brands send inventory to selected creators','AI product briefs generated for each product before first stream']},
+        {title:'Demand',items:['20 Australian fitness creators on Whatnot and Instagram Live','Lot 8 Verified badge as the incentive to join early','Personal outreach from Jamie — not cold email, warm relationship']},
+      ].map(s=>`<div><div class="phase0-col-title">${s.title}</div>${s.items.map(i=>`<div class="phase0-item"><span>→</span><span>${i}</span></div>`).join('')}</div>`).join('')}
+    </div>
+    <div class="kpi-box" style="background:color-mix(in srgb,${O} 5%,transparent);border:1px solid color-mix(in srgb,${O} 13%,transparent)">
+      <div style="color:${O};font-weight:700;font-size:12px;margin-bottom:4px">Success Metric: Month 3</div>
+      <div style="color:var(--light);font-size:13px">$100K in facilitated GMV from 20 creators across 10 brands. 3 brands converting to paid subscriptions. First Lot 8 user reviews on Product Hunt.</div>
+    </div>
+  </div>
+
+  ${h3('Creator Acquisition Strategy')}
+  <div class="grid-3">
+    ${[
+      {title:'Warm Network',c:O,items:['Jamie\'s PT and fitness community','Arjun\'s startup and D2C brand network','Target: first 50 creators via personal outreach only']},
+      {title:'Platform Mining',c:A,items:['Identify top AU sellers on Whatnot, eBay Live','Outreach with specific, personalised offer','Target: next 200 creators in Months 3-6']},
+      {title:'Content Seeding',c:G,items:['Lot 8 YouTube: \'How I made $X in one live stream\'','TikTok: creator success stories, platform tips','Organic creator acquisition from content by Month 6']},
+    ].map(s=>`<div class="card" style="border-top:3px solid ${s.c}"><div style="color:${s.c};font-weight:700;font-size:13px;margin-bottom:12px">${s.title}</div>${s.items.map(i=>`<div style="display:flex;gap:8px;margin-bottom:8px"><span style="color:${s.c};font-size:12px">→</span><span style="color:#BBBBAA;font-size:12px;line-height:1.5">${i}</span></div>`).join('')}</div>`).join('')}
+  </div>
+
+  ${h3('TikTok Shop Australia — The Catalyst Event')}
+  ${card(`${body('TikTok Shop Australia\'s launch — widely expected in H1 2026 — is the single largest free marketing event in Australian live commerce history. Every brand, creator, and journalist covering eCommerce will cover it. Lot 8 positions as the infrastructure partner that helps Australian sellers navigate TikTok Shop from Day 1.<br><br><strong style="color:var(--light)">The TikTok Shop playbook:</strong> Launch a "TikTok Shop Australia Readiness Kit" in the month before launch — a free guide for creators on how to set up, what to sell, and how to succeed. This positions Lot 8 as the expert voice in the category at the exact moment the mainstream market discovers live commerce. Capture email addresses. Convert to platform registrations at TikTok Shop\'s launch.')}`, `background:linear-gradient(135deg,color-mix(in srgb,${O} 6%,transparent),transparent);border-color:color-mix(in srgb,${O} 19%,transparent)`)}
+`;
+
+/* ── ROADMAP ── */
+const phase = (num,title,period,c,tags,items) => `
+  <div class="phase">
+    <div class="phase-num-col">
+      <div class="phase-circle" style="--c:${c}">${num}</div>
+      ${num < 3 ? `<div class="phase-line" style="--c:${c}"></div>` : ''}
+    </div>
+    <div class="card" style="flex:1">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div><div class="phase-title">${title}</div><div class="phase-period" style="color:${c}">${period}</div></div>
+        <div class="phase-tags">${tags.map(t=>`<span class="tag" style="--c:${c}">${t}</span>`).join('')}</div>
+      </div>
+      <div class="phase-items">
+        ${items.map(i=>`<div class="phase-item"><span class="phase-arrow" style="color:${c}">→</span><span class="phase-text">${i}</span></div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+const roadmap = () => `
+  ${tag('Product Roadmap')}
+  ${h2('BUILD IN PUBLIC. SHIP EVERY WEEK.')}
+  ${body('Three phases. Each phase has a clear definition of done. We do not move to Phase 2 until Phase 1 has demonstrated product-market fit measured by specific metrics, not by feel.')}
+
+  <div style="display:flex;flex-direction:column;gap:32px;margin-top:40px">
+    ${phase(1,'The Manual Network','Month 1 — Month 3',O,['$100K GMV','30 Brands','200 Creators'],[
+      'Launch Lot 8 brand and landing page (Webflow). Creator and brand waitlist open. PR: Product Hunt soft launch.',
+      'Manual brand-creator matching: Jamie and Josh personally facilitate first 20 brand-creator connections via email. No platform required.',
+      'Typeform + Stripe for brand subscriptions ($299 founding tier). Manual onboarding call for each brand.',
+      'Whatnot AU and eBay Live as the primary streaming platforms. Lot 8 is the brand-creator network layer, not yet the streaming layer.',
+      'Post-stream debrief surveys via Typeform. Claude generates performance summary and emails it to the creator. This is the first AI feature.',
+      'Founding creator verification: manual review of application, stream links, GMV evidence. First 50 creators are invited personally.',
+      'KPI gate to Phase 2: $100K facilitated GMV, 30 paying brands, 200 registered creators, 3 creators reporting meaningful income growth.',
+    ])}
+    ${phase(2,'The Platform','Month 3 — Month 12',A,['$2M GMV/mo','200 Brands','2,000 Creators','Seed Closed'],[
+      'Seed round closed ($750K). Ant commits full-time. First engineering hire (senior full-stack, $120-150K).',
+      'Lot 8 seller OS MVP: unified dashboard, Whatnot + eBay Live + TikTok Shop API integrations, inventory sync, order management, Aus Post label generation.',
+      'AI matching engine v1: Claude-powered brand-creator compatibility scoring. Automated match proposals replacing manual facilitation.',
+      'Buyer-facing product launch: the entertainment feed. Algorithmic discovery of Australian live commerce streams. One-tap guest checkout.',
+      'Creator AI coaching suite: real-time stream sidebar with product pinning recommendations, audience engagement signals, conversion coaching.',
+      'Auto-clip feature: AI extracts top 5 moments from each stream and formats as shoppable short-form clips for the discovery feed.',
+      'Lot 8 Score goes live: public creator ratings visible to all buyers and brands. First trust layer that creates platform stickiness.',
+      'Sydney expansion: dedicated creator and brand acquisition push. National coverage established by Month 12.',
+    ])}
+    ${phase(3,'Global Scale','Month 12 — Month 30',G,['$50M+ GMV','Series A','UK Launch','1,000+ Creators'],[
+      'Series A raised ($5-8M) at $2M ARR milestone. Dedicated engineering team: 6-8 people.',
+      'Lot 8 streaming layer: creators can go live directly on Lot 8 without using Whatnot or TikTok Shop as intermediaries. Full end-to-end control.',
+      'UK market launch: identical playbook to Australia, accelerated by learnings. Whatnot UK is already growing 600% YoY — the market is warm.',
+      'New Zealand launch: natural adjacency, shared cultural context, minimal localisation required.',
+      'B2B data intelligence product: anonymised live commerce market reports sold to brands and research firms. $300K+ ARR by Year 3.',
+      'Promoted placement product: native sponsored placements in the buyer feed and creator match results. Contextually relevant, not interruptive.',
+      'Creator financing: revenue-based advances to top creators against future GMV. Lot 8 becomes the financial layer for creator businesses.',
+    ])}
+  </div>
+`;
+
+/* ── COMPETITIVE ── */
+const competitive = () => {
+  const rows = [
+    ['Australia-first, local platform','✅','⚠️','❌','❌'],
+    ['Multi-platform OS (cross-platform)','✅','❌','❌','⚠️'],
+    ['AI creator-brand matching','✅','❌','❌','❌'],
+    ['Real-time AI stream coaching','✅','❌','❌','❌'],
+    ['Buyer entertainment feed','✅','⚠️','✅','❌'],
+    ['Brand-creator marketplace','✅','❌','⚠️','❌'],
+    ['Lot 8 Score (trust layer)','✅','❌','❌','❌'],
+    ['Performance-based brand pricing','✅','❌','⚠️','❌'],
+    ['Auto-clip shoppable content','✅','❌','⚠️','❌'],
+    ['Creator owns audience data','✅','⚠️','❌','✅'],
+    ['AU carrier fulfilment integration','✅','❌','❌','❌'],
+  ];
+  return `
+    ${tag('Competitive Position')}
+    ${h2('WHY LOT 8 WINS')}
+    ${body('Every competitor in this space solves one dimension. Whatnot is a marketplace. TikTok Shop is a discovery engine. CommentSold is a seller tool. Lot 8 is the only platform that is simultaneously the network, the OS, and the entertainment feed.')}
+
+    <div class="table-wrap mt-32">
+      <table>
+        <thead><tr>
+          <th>Feature / Capability</th>
+          <th class="center" style="color:var(--orange)">LOT 8</th>
+          <th class="center" style="color:var(--muted)">Whatnot</th>
+          <th class="center" style="color:var(--muted)">TikTok Shop</th>
+          <th class="center" style="color:var(--muted)">CommentSold</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(([f,s,w,t,c])=>`<tr>
+            <td style="color:var(--muted);font-size:12px">${f}</td>
+            <td class="col-lot8" style="text-align:center">${s}</td>
+            <td class="col-other" style="text-align:center">${w}</td>
+            <td class="col-other" style="text-align:center">${t}</td>
+            <td class="col-other" style="text-align:center">${c}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    ${h3('The Defensible Moats')}
+    <div class="moat-grid">
+      ${[
+        {title:'The Creator Network',c:O,desc:'Every Lot 8 Verified creator who builds their business on our platform has a Lot 8 Score, a buyer list, and a brand relationship portfolio that lives on Lot 8. Moving to a competitor means starting from zero. Network effects compound: 500 creators attracts more brands; more brands attracts more creators.'},
+        {title:'The Data Moat',c:A,desc:'Lot 8 will be the only platform with comprehensive, real-time data on what Australian live commerce buyers purchase, when, from whom, and at what price. This data becomes more valuable with every transaction and is impossible to replicate without equivalent transaction volume.'},
+        {title:'The AI Quality Gap',c:G,desc:'AI coaching that is trained on Lot 8\'s own GMV and conversion data — not generic recommendations — improves with every stream. A competitor entering the market has no training data. Lot 8\'s AI gets smarter every day; a new entrant\'s AI starts from zero.'},
+        {title:'Australia-First Distribution',c:P,desc:'The TikTok Shop launch is the brand-building event for Australian live commerce infrastructure. The first credible, local platform to establish itself as the expert voice in this category during that event owns the narrative and the SEO for years.'},
+      ].map(m=>`<div class="card" style="border-top:3px solid ${m.c}"><div class="moat-title" style="color:${m.c}">${m.title}</div><div class="body" style="font-size:12px">${m.desc}</div></div>`).join('')}
+    </div>
+  `;
+};
+
+/* ── RAISE ── */
+const raise = () => `
+  ${tag('Investment')}
+  ${h2('THE ASK')}
+  ${body('We are raising a seed round to prove the model, reach $2M ARR, and establish Lot 8 as the undisputed live commerce infrastructure platform in Australia before the Series A.')}
+
+  ${card(`<div class="grid-4-raise">
+    ${[['$750K','Seed Round Size'],['$4.5M','Pre-Money Valuation'],['SAFE','Instrument'],['45 Days','Target Close']].map(([v,l])=>`<div style="text-align:center">${metric(v,l)}</div>`).join('')}
+  </div>`, `background:linear-gradient(135deg,color-mix(in srgb,${O} 7%,transparent),color-mix(in srgb,${A} 4%,transparent));border-color:color-mix(in srgb,${O} 21%,transparent);margin-top:32px`)}
+
+  ${h3('Use of Funds')}
+  <div class="grid-2">
+    ${[
+      {label:'Engineering (Ant + 1 hire)',amount:'$280K',pct:'37%',desc:'Platform OS MVP build. Whatnot + TikTok Shop + eBay Live integrations. AI coaching suite v1.'},
+      {label:'Founding Team Salaries',amount:'$220K',pct:'29%',desc:'Josh full-time (exits Aus Post). Arjun full-time (Inaam secondary). 12 months funded.'},
+      {label:'Brand &amp; Creator Acquisition',amount:'$120K',pct:'16%',desc:'Content production, community events, first Lot 8 Verified creator campaign.'},
+      {label:'Legal, IP &amp; Operations',amount:'$80K',pct:'11%',desc:'Entity structure, IP assignment, employment contracts, privacy policy, Terms of Service.'},
+      {label:'Working Capital Buffer',amount:'$50K',pct:'7%',desc:'Operational buffer. Unused capital deployed to whichever acquisition channel is performing.'},
+    ].map(item=>`${card(`<div class="fund-head"><div class="fund-label">${item.label}</div><div><span class="fund-amount">${item.amount}</span><span class="fund-pct">${item.pct}</span></div></div><div class="body" style="font-size:12px">${item.desc}</div>`)}`).join('')}
+  </div>
+
+  ${h3('Investor Targets')}
+  <div class="flex-col-12">
+    ${[
+      {type:'Lead — Bank-Affiliated (Social Commerce / Fintech)',source:"Arjun's Startupbootcamp cohort introduction",amount:'$200-300K',rationale:'AU CDR and fintech alignment. Live commerce sits at the intersection of financial services and creator economy.'},
+      {type:'Co-Lead — Social Impact VC',source:"Arjun's Startupbootcamp introduction",amount:'$150-200K',rationale:'Creator economic empowerment thesis. Lot 8 directly increases creator income and brand access for Australian SMBs.'},
+      {type:'Strategic — Lance East Family Office',source:"Jamie's direct relationship via fund manager",amount:'$100-150K',rationale:"Portfolio fit with existing commerce/consumer investments. Brand exposure and deal flow from Lot 8's brand network."},
+      {type:'Angel — Laurence Escalante (Advisory Ticket)',source:"Jamie's direct family relationship",amount:'$50-100K + advisory equity',rationale:"VGW's gamification architecture is the core moat for the AI coaching and engagement mechanics. Advisory brings specific, irreplaceable technical credibility."},
+      {type:"Angels — Wade Institute / Startupbootcamp Network",source:"Arjun's community",amount:'$100-150K total',rationale:'Multiple smaller tickets from founders and operators who understand B2B SaaS and marketplace dynamics.'},
+    ].map(inv=>`${card(`<div class="investor-row"><div class="inv-amount"><div class="inv-amount-val">${inv.amount}</div></div><div class="inv-divider"></div><div style="flex:1"><div class="inv-type">${inv.type}</div><div class="inv-source">Source: ${inv.source}</div><div class="body" style="font-size:12px">${inv.rationale}</div></div></div>`)}`).join('')}
+  </div>
+
+  <div class="card card-series-a">
+    <div class="series-a-title">THE SERIES A TRIGGER</div>
+    <div style="color:var(--light);font-size:16px;font-weight:600;margin-bottom:8px">We raise Series A when we hit $2M ARR with &gt;80% gross margin and &gt;5% month-over-month GMV growth.</div>
+    ${body('At that point, Lot 8 is the demonstrably dominant live commerce infrastructure platform in Australia, with a proven AI coaching product, a network of 2,000+ creators, and a clear expansion playbook for UK and NZ. Series A target: $6M at $25-30M pre-money valuation. Lead: a tier-1 global consumer/marketplace fund.')}
+  </div>
+`;
+
+/* ── RENDER ── */
+const contentMap = {
+  Notes: notes,
+  'Action Plan': actionPlan,
+  Taskboard: taskboard,
+  Vision: vision,
+  Platform: platform,
+  'Value Props': valueProps,
+  'AI Core': aiCore,
+  'Business Model': businessModel,
+  Financials: financials,
+  'Go-to-Market': gtm,
+  Roadmap: roadmap,
+  Competitive: competitive,
+  Raise: raise,
+};
+
+const nav = document.getElementById('nav');
+const main = document.getElementById('main');
+
+// Build nav buttons — workstation tabs first, then a divider, then the pitch deck
+sections.forEach((s, i) => {
+  // insert a visual divider between workstation tabs and the pitch deck
+  if (s === 'Vision') {
+    const sep = document.createElement('span');
+    sep.textContent = 'PITCH';
+    sep.style.cssText = "align-self:center;color:#444;font-size:9px;letter-spacing:.14em;font-weight:700;padding:0 6px 0 10px;border-left:1px solid var(--border);margin-left:6px";
+    nav.appendChild(sep);
+  }
+  const btn = document.createElement('button');
+  btn.textContent = s;
+  btn.dataset.section = s;
+  if (workstationSections.includes(s)) btn.dataset.ws = '1';
+  if (s === 'Notes') btn.classList.add('active');
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderSection(s);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+  nav.appendChild(btn);
+});
+
+function renderSection(name) {
+  main.innerHTML = `<div class="section active">${contentMap[name]()}</div>`;
+  if (name === 'Taskboard') bindBoard();
+}
+
+// Load task state, then render the default view
+loadTasks();
+renderSection('Notes');
+</script>
+
+</body>
+</html>

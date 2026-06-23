@@ -492,7 +492,7 @@ const SB = supabase.createClient(
 const O = '#FF5C00', A = '#FFB800', G = '#6BCB77', P = '#A78BFA', R = '#F87171', C = '#67E8F9';
 
 const GROUPS = [
-  { label:'Action Center',  key:'action',   tabs:['Notes','Action Plan','Taskboard'],                                                                         c:G },
+  { label:'Action Center',  key:'action',   tabs:['Notes','Action Plan','Taskboard','Outreach'],                                                              c:G },
   { label:'Lot 8 Strategy', key:'strategy', tabs:['Vision','Platform','Value Props','AI Core','Business Model','Financials','Go-to-Market','Roadmap','Competitive','Raise'], c:O },
   { label:'Landing Page',   key:'landing',  tabs:['Landing Page'],                                                                                            c:A },
 ];
@@ -1671,6 +1671,123 @@ async function lpSubmit() {
   }
 }
 
+/* ── OUTREACH ── */
+function copyText(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    const btn = el.previousElementSibling?.querySelector('.copy-btn') || document.querySelector(`[data-copy="${id}"]`);
+    if (btn) { btn.textContent = 'Copied ✓'; setTimeout(() => btn.textContent = 'Copy', 1800); }
+  });
+}
+
+const outreach = () => {
+  const pitch = (id, label, accentColor, subject, body) => `
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);background:color-mix(in srgb,${accentColor} 7%,transparent)">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="tag" style="background:color-mix(in srgb,${accentColor} 14%,transparent);border:1px solid color-mix(in srgb,${accentColor} 30%,transparent);color:${accentColor};font-size:10px;letter-spacing:.1em;padding:3px 10px;border-radius:4px;font-weight:700">${label}</span>
+          ${subject ? `<span style="color:var(--muted);font-size:12px">Subject: <strong style="color:var(--light)">${subject}</strong></span>` : ''}
+        </div>
+        <button data-copy="${id}" onclick="copyText('${id}')" class="copy-btn" style="padding:5px 12px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--muted);letter-spacing:.04em;transition:all .15s">Copy</button>
+      </div>
+      <pre id="${id}" style="margin:0;padding:18px;font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.75;color:#CCC;white-space:pre-wrap;word-break:break-word">${body}</pre>
+    </div>`;
+
+  const creatorDM = `Hey [Name] — building Australia's first in-stream shopping platform. You stream on YouTube, pin products, we handle the checkout. You earn 10% on every sale, live. Trial is free and you keep 100% of your cut. We're locking in 5 creators. Keen to chat?`;
+
+  const creatorEmail = `Hey [Name],
+
+I'm [Arjun / Josh / Jamie / Antonio] from Lot 8 — we're building the live commerce layer for Australian creators.
+
+Here's the short version: you keep doing what you already do — stream on YouTube. We add a product panel alongside your stream. Your audience taps once and buys without ever leaving the stream. You earn 10% on every sale, in real time.
+
+No sponsorship brief. No "post three times and tag us." You pick the products, you own the relationship with your buyers.
+
+For the trial, you keep 100% of your cut — we absorb the payment processing costs to make sure the numbers are real before we scale.
+
+We're hand-picking 5 creators for the pilot. We think you'd be a fit because [specific reason — niche, audience, energy, existing live habits]. We'd run one stream together and see what converts.
+
+Worth a 20-minute call this week?
+
+— [Name]
+Lot 8 · Watch. Chat. Buy.`;
+
+  const brandDM = `Hey [Name] — building Lot 8, AU's live commerce platform. Creators sell your products during their streams. You pay commission only — 10% to creator, 2–3% to us — zero spend unless something sells. Private 5-brand pilot. Would love 20 mins.`;
+
+  const brandEmail = `Hi [Name],
+
+I'm [Name] from Lot 8. We're building Australia's first creator-powered live commerce platform — and we're inviting five brands into a private pilot.
+
+The model is simple: your products are sold live by Australian creators to their audiences. You set the price (full retail). You control which products, how much inventory is available, and the brand guidelines. We match you to creators whose audiences actually buy your category.
+
+The economics: 10% goes to the creator, 2–3% to us. That's it. You pay nothing unless something sells.
+
+What you get from the pilot:
+— A real test of live commerce with no upfront media spend
+— A live GMV dashboard: you see every sale as it happens during the stream
+— Data on which creator audiences convert for your products
+— A direct creator relationship you can build on
+
+We're running this on YouTube — embedded stream with a product panel alongside it. Checkout is one tap (saved card). No redirects, no links in bio, no DM-to-purchase friction.
+
+We have interested creators already lined up. We're ready to move.
+
+Worth a quick coffee this week to see if it's a fit?
+
+— [Name]
+Lot 8 · Watch. Chat. Buy.
+lot8-workstation.vercel.app`;
+
+  return `
+  ${tag('Action Center', G)}
+  ${h2('OUTREACH')}
+  ${body('Ready-to-send pitches for creator and brand recruitment. Click <strong>Copy</strong> on any template, personalise the bracketed fields, and send. The [specific reason] line in the creator email is the highest-leverage part — a one-liner about why that creator specifically converts far better than a generic template.')}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:28px 0 12px">
+    <div style="padding:16px;background:color-mix(in srgb,${G} 7%,transparent);border:1px solid color-mix(in srgb,${G} 20%,transparent);border-radius:10px">
+      <div style="font-size:10px;font-weight:700;color:${G};letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Creators</div>
+      <div style="font-size:13px;color:#CCC;line-height:1.6">Target: camera-comfortable AU streamers with engaged live audiences. YouTube preferred for v1. Look for: GRWM, try-on, lifestyle, sports, gaming.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Hook: <strong style="color:${G}">100% trial earnings</strong> + real money vs AdSense</div>
+    </div>
+    <div style="padding:16px;background:color-mix(in srgb,${A} 7%,transparent);border:1px solid color-mix(in srgb,${A} 20%,transparent);border-radius:10px">
+      <div style="font-size:10px;font-weight:700;color:${A};letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px">Brands</div>
+      <div style="font-size:13px;color:#CCC;line-height:1.6">Target: AU brands with retail product, active social presence, appetite for creator collab. Warm intro preferred — coffee chat ask. Priority: Bon Emil, beauty, fashion/athleisure.</div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Hook: <strong style="color:${A}">commission-only</strong> — zero spend unless something sells</div>
+    </div>
+  </div>
+
+  <div style="margin:32px 0 8px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:18px">🎙️</span>
+    <span style="font-size:22px;font-weight:800;font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;color:var(--light)">CREATOR PITCHES</span>
+  </div>
+  ${pitch('cr-dm', 'DM / Short', G, null, creatorDM)}
+  ${pitch('cr-email', 'Email', G, "You stream, you earn — Lot 8 pilot (AU only)", creatorEmail)}
+
+  <div style="margin:32px 0 8px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:18px">🏷️</span>
+    <span style="font-size:22px;font-weight:800;font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;color:var(--light)">BRAND PITCHES</span>
+  </div>
+  ${pitch('br-dm', 'DM / Short', A, null, brandDM)}
+  ${pitch('br-email', 'Email', A, "Commission-only live sales — Lot 8 pilot", brandEmail)}
+
+  <div class="card" style="margin-top:12px">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">Personalisation notes</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${[
+        ['[Name]', 'Always personalise the opener — "Hey Sarah" outperforms "Hey Creator" every time.'],
+        ['[specific reason]', 'The single highest-leverage line. Reference a specific stream, a product they already mentioned, a recent collab, or their niche. One sentence minimum.'],
+        ['[Arjun / Josh / Jamie / Antonio]', 'Whoever is sending signs off. Warm intros use the name the contact already knows.'],
+        ['Subject line', 'These are short and direct. Do not over-explain in the subject — the specifics live in the email body.'],
+      ].map(([k,v]) => `
+        <div style="display:flex;gap:12px;align-items:baseline">
+          <code style="font-size:11px;background:#1A1A1A;border:1px solid var(--border);padding:2px 8px;border-radius:4px;color:${O};flex-shrink:0;white-space:nowrap">${k}</code>
+          <span style="font-size:13px;color:var(--muted);line-height:1.5">${v}</span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+};
+
 /* ── RENDER ── */
 const contentMap = {
   Notes: notes,
@@ -1687,6 +1804,7 @@ const contentMap = {
   Competitive: competitive,
   Raise: raise,
   'Landing Page': landingPage,
+  Outreach: outreach,
 };
 
 const nav    = document.getElementById('nav');

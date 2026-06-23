@@ -1660,7 +1660,15 @@ async function lpSubmit() {
   const { error } = await SB.from('waitlist').insert({ name, email, type: _lpType });
   msg.style.display = 'block';
   if (error) { msg.style.color=R; msg.textContent='Something went wrong — try again.'; }
-  else { msg.style.color=G; msg.textContent='🙌 You\'re on the list! We\'ll reach out personally.'; document.getElementById('lp-name').value=''; document.getElementById('lp-email').value=''; }
+  else {
+    msg.style.color=G; msg.textContent='🙌 You\'re on the list! We\'ll reach out personally.';
+    document.getElementById('lp-name').value=''; document.getElementById('lp-email').value='';
+    fetch('https://keywwvhzlgryfbqhbpim.supabase.co/functions/v1/send-welcome-email',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtleXd3dmh6bGdyeWZicWhicGltIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNjAxMzgsImV4cCI6MjA5NzczNjEzOH0.w7o5G8q3dEOiwVQI4Wef_8nDQJwhEgkVL2njeu7f2tM'},
+      body:JSON.stringify({name,email}),
+    }).catch(()=>{});
+  }
 }
 
 /* ── RENDER ── */
